@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 2.3: AI Search Copilot (RAG) & Streaming Answers
+## Phase 2.4: Knowledge Graph & Entity-Aware Search
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v2.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.3.0)
+[![Release](https://img.shields.io/badge/release-v2.4.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.4.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,32 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 2.4 Knowledge Graph & Entity-Aware Search
+
+1. **Knowledge Graph Service (`KnowledgeGraphService`)**:
+   - Automatically populates entity nodes (`PERSON`, `ORGANIZATION`, `LOCATION`, `TECHNOLOGY`, `PROGRAMMING_LANGUAGE`, `FRAMEWORK`, `DATABASE`, `COMPANY`, `PRODUCT`) and relationship edges (`USES`, `CREATED_BY`, `WORKS_FOR`, `PART_OF`, `DEPENDS_ON`, `IMPLEMENTS`) from crawled documents.
+
+2. **Entity Resolution & Pluggable Storage (`GraphStore` & `InMemGraphStore`)**:
+   - Resolves canonical entity names and aliases (e.g. `"spring"` -> `"Spring Boot"`, `"postgres"` -> `"PostgreSQL"`).
+   - Pluggable graph database interface supporting N-hop neighbor traversal and shortest path lookups.
+
+3. **Entity-Aware Search & AI Copilot Integration (`EntityAwareSearchService`)**:
+   - Detects entity-centric query intents and enriches hybrid search results and RAG prompts with structured graph facts `[Graph-Fact]`.
+
+---
+
+### Phase 2.4 Knowledge Graph REST APIs (v3)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v3/graph/rebuild` | Trigger Knowledge Graph rebuild from seed entities & documents |
+| `GET` | `/api/v3/graph/entity/{name}` | Resolve entity node details & canonical alias mapping |
+| `GET` | `/api/v3/graph/entity/{id}/neighbors` | Retrieve 1-hop connected graph edges and neighbor nodes |
+| `GET` | `/api/v3/graph/search` | Search graph for entity-aware query enrichment |
+| `GET` | `/api/v3/graph/statistics` | Knowledge Graph stats (total entities, relationships, storage engine) |
 
 ---
 

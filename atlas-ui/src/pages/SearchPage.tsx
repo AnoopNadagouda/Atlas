@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
 
-  const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2].";
+  const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact].";
+
+  const mockEntityCard = {
+    name: 'Atlas Search Engine',
+    type: 'PRODUCT',
+    category: 'Distributed Search Platform',
+    confidence: '99%',
+    connectedTechnologies: [
+      { name: 'Spring Boot', relation: 'USES', type: 'FRAMEWORK' },
+      { name: 'Apache Kafka', relation: 'USES', type: 'EVENT_STREAMING' },
+      { name: 'PostgreSQL', relation: 'USES', type: 'DATABASE' },
+      { name: 'Redis', relation: 'USES', type: 'CACHE' },
+    ]
+  };
 
   const mockResults = [
     {
@@ -17,7 +30,7 @@ export const SearchPage: React.FC = () => {
       bm25Score: 0.892,
       semanticScore: 0.945,
       rrfScore: 0.0328,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID'],
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH'],
     },
     {
       id: 'doc-bm25-002',
@@ -35,7 +48,7 @@ export const SearchPage: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
         <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & AI Copilot</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, and Grounded AI Copilot (RAG) with SSE Streaming.</p>
+        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, Knowledge Graph Navigation, and Grounded AI Copilot (RAG).</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -44,7 +57,7 @@ export const SearchPage: React.FC = () => {
             <input
               type="text"
               className="input-field"
-              placeholder="Ask AI Search Copilot or search indexed documents..."
+              placeholder="Ask AI Search Copilot, explore Knowledge Graph, or search indexed documents..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               style={{ paddingLeft: '44px' }}
@@ -64,6 +77,13 @@ export const SearchPage: React.FC = () => {
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
             <Bot size={14} /> AI Search Copilot (RAG)
+          </button>
+          <button
+            className={`btn ${searchMode === 'graph' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('graph')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <Network size={14} /> Knowledge Graph
           </button>
           <button
             className={`btn ${searchMode === 'hybrid' ? 'btn-primary' : 'btn-secondary'}`}
@@ -89,11 +109,41 @@ export const SearchPage: React.FC = () => {
         </div>
       </div>
 
+      {(searchMode === 'copilot' || searchMode === 'graph') && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #10b981' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 600 }}>
+              <Network size={20} /> Knowledge Graph Entity Card & Traversal
+            </div>
+            <span className="badge badge-info">Canonical Confidence: {mockEntityCard.confidence}</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f3f4f6' }}>{mockEntityCard.name}</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{mockEntityCard.category} ({mockEntityCard.type})</p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Connected Knowledge Graph Nodes (1-Hop Traversal):</span>
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {mockEntityCard.connectedTechnologies.map((tech) => (
+                <div key={tech.name} style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
+                  <Cpu size={14} style={{ color: '#818cf8' }} />
+                  <span><strong>{tech.name}</strong> ({tech.relation})</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {searchMode === 'copilot' && (
         <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #6366f1' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#818cf8', fontWeight: 600 }}>
-              <Bot size={20} /> AI Search Copilot Answer (SSE Streamed)
+              <Bot size={20} /> AI Search Copilot Answer (Grounded with Graph Facts)
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={() => navigator.clipboard.writeText(mockCopilotAnswer)}>
@@ -113,6 +163,7 @@ export const SearchPage: React.FC = () => {
             <span>Sources Cited:</span>
             <span className="badge badge-info">[1] doc-foundation-001</span>
             <span className="badge badge-info">[2] doc-bm25-002</span>
+            <span className="badge badge-info">[Graph-Fact] Spring Boot, Kafka, Postgres</span>
           </div>
         </div>
       )}
@@ -120,7 +171,7 @@ export const SearchPage: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
           <span>Grounded Retrieval Results ({mockResults.length} indexed documents)</span>
-          <span>Parallel Hybrid Latency: 14ms (SSE Provider: LocalStubLlmProvider)</span>
+          <span>Entity-Aware Latency: 16ms (Graph Engine: InMemGraphStore)</span>
         </div>
 
         {mockResults.map((result) => (
