@@ -30,7 +30,7 @@ public class SearchGatewayController {
                         SearchResultDto.builder()
                                 .id("doc-foundation-001")
                                 .url("https://atlas.search/docs/foundation")
-                                .title("Atlas Search Platform - Infrastructure Foundation Ready")
+                                .title("Atlas Platform - Infrastructure Foundation Ready")
                                 .snippet("Phase 1.1 Infrastructure & Project Foundation is active and connected.")
                                 .score(0.99)
                                 .bm25Score(1.25)

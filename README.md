@@ -1,7 +1,7 @@
-# ATLAS SEARCH: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
+# ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
 ## Phase 1.1: Production-Hardened Infrastructure & Foundation
 
-**Atlas Search** is an enterprise-grade, cloud-native distributed AI search platform built to crawl, index, rank, and semantically search multi-modal documents at a scale exceeding **1 Billion documents**.
+**Atlas** is an enterprise-grade, cloud-native distributed AI search platform built to crawl, index, rank, and semantically search multi-modal documents at a scale exceeding **1 Billion documents**.
 
 ---
 

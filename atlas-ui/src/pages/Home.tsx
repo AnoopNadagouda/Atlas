@@ -6,7 +6,7 @@ export const Home: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div className="glass-panel" style={{ padding: '32px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.1))' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Atlas Search Studio v1.0.0</h2>
+        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Atlas Studio v1.0.0</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', maxWidth: '700px' }}>
           Phase 1.1 Infrastructure & Project Foundation successfully initialized. Microservice backend communication, polyglot persistence, and event pipeline placeholders are operational.
         </p>

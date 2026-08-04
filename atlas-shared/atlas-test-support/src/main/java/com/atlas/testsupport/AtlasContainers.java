@@ -9,7 +9,7 @@ public final class AtlasContainers {
 
     private static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>(
             DockerImageName.parse("postgres:16-alpine"))
-            .withDatabaseName("atlas_search_test")
+            .withDatabaseName("atlas_db_test")
             .withUsername("atlas")
             .withPassword("atlas_password");
 

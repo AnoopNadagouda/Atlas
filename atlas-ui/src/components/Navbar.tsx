@@ -9,7 +9,7 @@ export const Navbar: React.FC = () => {
           <Search size={20} color="#fff" />
         </div>
         <div>
-          <h1 style={{ fontSize: '1.25rem', fontWeight: 700, background: 'linear-gradient(90deg, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ATLAS SEARCH</h1>
+          <h1 style={{ fontSize: '1.25rem', fontWeight: 700, background: 'linear-gradient(90deg, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>ATLAS</h1>
           <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Cloud Native AI Search Engine</span>
         </div>
       </div>

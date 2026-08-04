@@ -9,7 +9,7 @@ class CommonUtilsTest {
     @Test
     void testStringUtils() {
         assertTrue(StringUtils.isNullOrBlank("  "));
-        assertEquals("atlas-search-platform", StringUtils.toSlug("Atlas Search Platform!"));
+        assertEquals("atlas-platform", StringUtils.toSlug("Atlas Platform!"));
         assertEquals("Hello...", StringUtils.truncate("Hello World", 5));
     }
 

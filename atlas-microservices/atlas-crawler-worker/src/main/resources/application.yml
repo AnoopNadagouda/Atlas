@@ -5,7 +5,7 @@ spring:
   application:
     name: atlas-crawler-worker
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/atlas_search}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/atlas_db}
     username: ${SPRING_DATASOURCE_USERNAME:atlas}
     password: ${SPRING_DATASOURCE_PASSWORD:atlas_password}
     driver-class-name: org.postgresql.Driver

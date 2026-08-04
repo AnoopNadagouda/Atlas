@@ -8,7 +8,7 @@ export const SearchPage: React.FC = () => {
   const mockResults = [
     {
       id: 'doc-foundation-001',
-      title: 'Atlas Search Platform - Infrastructure Foundation Ready',
+      title: 'Atlas Platform - Infrastructure Foundation Ready',
       url: 'https://atlas.search/docs/foundation',
       snippet: 'Phase 1.1 Infrastructure & Project Foundation is active. All Spring Boot microservices, Kafka topics, PostgreSQL schema mappings, and Redis query caches are initialized.',
       score: 0.99,
