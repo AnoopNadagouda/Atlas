@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 2.2: Hybrid Search Engine & Reciprocal Rank Fusion (RRF)
+## Phase 2.3: AI Search Copilot (RAG) & Streaming Answers
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.2.0)
+[![Release](https://img.shields.io/badge/release-v2.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.3.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,33 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 2.3 AI Search Copilot (RAG) & Streaming Answers
+
+1. **AI Search Copilot Service (`AiCopilotService`)**:
+   - Executes Hybrid Search (`HybridSearchService`) to retrieve grounded top-K documents.
+   - Programmatically builds prompts with `ContextBuilder` & `PromptBuilder`.
+   - Generates grounded answers with strict citation requirements `[1]`, `[2]` and hallucination guardrails.
+   - Delivers real-time Server-Sent Events (SSE) streaming answers via Spring `SseEmitter`.
+
+2. **LLM Provider Abstraction (`LlmProvider`)**:
+   - Core domain contract supporting interchangeable LLM providers:
+     - `LocalStubLlmProvider` (Offline / Local RAG engine)
+     - `OpenAiLlmProvider` (OpenAI REST API)
+     - `GeminiLlmProvider` (Google Cloud Vertex / Gemini API)
+
+---
+
+### Phase 2.3 AI Copilot REST APIs (v3)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v3/copilot/chat` | Execute Grounded RAG Chat answer generation with citations & sources |
+| `POST` | `/api/v3/copilot/stream` | Stream real-time RAG response via Server-Sent Events (SSE) |
+| `GET` | `/api/v3/copilot/providers` | List configured LLM providers (`LocalStubLlmProvider`, `OpenAI`, `Gemini`) |
+| `GET` | `/api/v3/copilot/config` | AI Copilot token limits, temperature, and feature flag settings |
 
 ---
 

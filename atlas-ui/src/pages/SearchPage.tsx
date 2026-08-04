@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid'>('hybrid');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot'>('copilot');
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2].";
 
   const mockResults = [
     {
@@ -31,8 +34,8 @@ export const SearchPage: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio Playground</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, and Parallel Hybrid Search with Reciprocal Rank Fusion (RRF).</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & AI Copilot</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, and Grounded AI Copilot (RAG) with SSE Streaming.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -41,26 +44,33 @@ export const SearchPage: React.FC = () => {
             <input
               type="text"
               className="input-field"
-              placeholder="Search across web, documentation, code repositories, or vector embeddings..."
+              placeholder="Ask AI Search Copilot or search indexed documents..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               style={{ paddingLeft: '44px' }}
             />
             <Search size={20} style={{ position: 'absolute', left: '14px', top: '12px', color: 'var(--text-dim)' }} />
           </div>
-          <button className="btn btn-primary">
-            <Zap size={18} /> Search
+          <button className="btn btn-primary" onClick={() => setIsStreaming(true)}>
+            <Zap size={18} /> Search & Ask Copilot
           </button>
         </div>
 
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Retrieval Mode:</span>
           <button
-            className={`btn ${searchMode === 'keyword' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSearchMode('keyword')}
+            className={`btn ${searchMode === 'copilot' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('copilot')}
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
-            <Layers size={14} /> Keyword (BM25)
+            <Bot size={14} /> AI Search Copilot (RAG)
+          </button>
+          <button
+            className={`btn ${searchMode === 'hybrid' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('hybrid')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <Sparkles size={14} /> Hybrid (RRF + Vector)
           </button>
           <button
             className={`btn ${searchMode === 'semantic' ? 'btn-primary' : 'btn-secondary'}`}
@@ -70,19 +80,47 @@ export const SearchPage: React.FC = () => {
             <Brain size={14} /> Semantic (Vector)
           </button>
           <button
-            className={`btn ${searchMode === 'hybrid' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSearchMode('hybrid')}
+            className={`btn ${searchMode === 'keyword' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('keyword')}
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
-            <Sparkles size={14} /> Hybrid (RRF + Vector)
+            <Layers size={14} /> Keyword (BM25)
           </button>
         </div>
       </div>
 
+      {searchMode === 'copilot' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #6366f1' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#818cf8', fontWeight: 600 }}>
+              <Bot size={20} /> AI Search Copilot Answer (SSE Streamed)
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={() => navigator.clipboard.writeText(mockCopilotAnswer)}>
+                <Copy size={12} /> Copy Answer
+              </button>
+              {isStreaming && (
+                <button className="btn btn-danger" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={() => setIsStreaming(false)}>
+                  <Square size={12} /> Stop Generation
+                </button>
+              )}
+            </div>
+          </div>
+
+          <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#f3f4f6' }}>{mockCopilotAnswer}</p>
+
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+            <span>Sources Cited:</span>
+            <span className="badge badge-info">[1] doc-foundation-001</span>
+            <span className="badge badge-info">[2] doc-bm25-002</span>
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-          <span>Showing {mockResults.length} indexed contract results ({searchMode.toUpperCase()} Mode)</span>
-          <span>Parallel Latency: 14ms (Virtual Threads: True)</span>
+          <span>Grounded Retrieval Results ({mockResults.length} indexed documents)</span>
+          <span>Parallel Hybrid Latency: 14ms (SSE Provider: LocalStubLlmProvider)</span>
         </div>
 
         {mockResults.map((result) => (

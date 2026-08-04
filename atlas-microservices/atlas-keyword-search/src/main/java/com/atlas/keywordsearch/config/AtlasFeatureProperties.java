@@ -12,6 +12,8 @@ public class AtlasFeatureProperties {
     private boolean semanticSearch = true;
     private boolean hybridSearch = true;
     private boolean vectorSearch = true;
-    private boolean aiCopilot = false;
+    private boolean aiCopilot = true;
+    private boolean streaming = true;
+    private boolean citations = true;
     private boolean knowledgeGraph = false;
 }
