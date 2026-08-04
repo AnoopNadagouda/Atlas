@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @Builder
@@ -21,5 +22,8 @@ public class SearchResultDto {
     private double vectorScore;
     private double pageRankScore;
     private String domain;
+    private Set<String> matchedTerms;
+    private Set<String> matchedFields;
+    private Map<String, Double> termContributions;
     private Map<String, Object> metadata;
 }

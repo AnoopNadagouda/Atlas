@@ -1,5 +1,5 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 1.4: Custom Inverted Index Engine
+## Phase 1.5: Query Processing & BM25 Search Engine
 
 **Atlas** is an enterprise-grade, cloud-native distributed AI search platform built to crawl, index, rank, and semantically search multi-modal documents at a scale exceeding **1 Billion documents**.
 
@@ -29,7 +29,7 @@ atlas-search/
 │
 └── atlas-microservices/                  # Application Microservices
     ├── atlas-search-gateway/             # Query Router, Swagger & Redis Cache (Port 8081)
-    ├── atlas-keyword-search/             # BM25 Inverted Index Engine & Swagger (Port 8082)
+    ├── atlas-keyword-search/             # Phase 1.5 Query Processing & BM25 Search Engine (Port 8082)
     ├── atlas-crawler-worker/             # Phase 1.2 Distributed Web Crawler Worker (Port 8083)
     ├── atlas-parser-service/             # Phase 1.3 HTML Parser & Document Cleaner (Port 8085)
     ├── atlas-index-builder-worker/       # Phase 1.4 Custom Inverted Index Engine (Port 8084)
@@ -147,6 +147,42 @@ atlas-search/
 | `GET` | `/api/v1/index/segments` | List all active immutable index segments |
 | `GET` | `/api/v1/index/segments/{id}` | Fetch detailed index segment metadata |
 | `GET` | `/api/v1/index/status` | Inverted index engine service status |
+
+---
+
+### Phase 1.5 Query Processing & BM25 Search Engine Components
+
+1. **Query Processing & Parser (`QueryParser` & `QueryNormalizer`)**:
+   - Parses single-word, multi-word, quoted phrases (`"distributed search"`), and Boolean operators (`AND`, `OR`, `NOT`).
+   - Normalizes terms matching indexing normalization (Unicode NFC, lowercasing, stop words, Porter stemming).
+
+2. **Index Lookup Engine (`SegmentLookupEngine`)**:
+   - Traverses active on-disk index segments (`./data/index_segments/`).
+   - Fetches posting lists for query terms, computes document frequencies ($df$) and term frequencies ($tf$).
+   - Evaluates boolean constraints (`AND`, `OR`, `NOT`) and positional phrase constraints.
+
+3. **BM25 Ranking Engine (`BM25Ranker`)**:
+   - Robertson-Spärck Jones BM25 formula implemented from scratch:
+     $$\text{IDF}(t) = \ln \left( \frac{N - n(t) + 0.5}{n(t) + 0.5} + 1 \right)$$
+     $$\text{Score}(D, t) = \text{IDF}(t) \cdot \frac{f(t, D) \cdot (k_1 + 1)}{f(t, D) + k_1 \cdot \left(1 - b + b \cdot \frac{|D|}{\text{avgdl}}\right)} \cdot \text{fieldBoost}$$
+   - Externalized parameters ($k_1 = 1.2$, $b = 0.75$, `titleBoost = 2.0`, `headingBoost = 1.5`, `bodyBoost = 1.0`).
+
+4. **Snippet Generator & Redis Cache (`SnippetGenerator` & `SearchCacheService`)**:
+   - Extracts relevant passage with highest term density and highlights terms (`<b>term</b>`).
+   - Redis query caching with configurable TTL (`atlas.search.cacheTtlSeconds`) and cache statistics tracking.
+
+---
+
+### Keyword Search REST APIs
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v1/search?q={query}&page=0&size=10` | Execute BM25 keyword search query |
+| `GET` | `/api/v1/search/{query}` | Execute path-based search query |
+| `POST` | `/api/v1/search/query` | Execute structured SearchRequest payload |
+| `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
+| `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
+| `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
 
 ---
 
