@@ -37,12 +37,23 @@ public class CrawlJobEntity {
     @Builder.Default
     private int maxPages = 10000;
 
+    @Column(name = "max_concurrency")
+    @Builder.Default
+    private int maxConcurrency = 5;
+
     @Column(name = "pages_crawled")
     @Builder.Default
     private int pagesCrawled = 0;
 
+    @Column(name = "pages_failed")
+    @Builder.Default
+    private int pagesFailed = 0;
+
     @Column(name = "cron_schedule")
     private String cronSchedule;
+
+    @Column(name = "user_agent")
+    private String userAgent;
 
     @Column(name = "created_at", nullable = false)
     @Builder.Default

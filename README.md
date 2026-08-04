@@ -1,5 +1,5 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 1.1: Production-Hardened Infrastructure & Foundation
+## Phase 1.2: Distributed Web Crawler Foundation
 
 **Atlas** is an enterprise-grade, cloud-native distributed AI search platform built to crawl, index, rank, and semantically search multi-modal documents at a scale exceeding **1 Billion documents**.
 
@@ -11,7 +11,7 @@
 atlas-search/
 ├── pom.xml                               # Root Maven parent POM (Java 21, Spring Boot 3.2.5)
 ├── mvnw & mvnw.cmd                       # Maven Wrapper for reproducible builds
-├── docker-compose.yml                    # Multi-container container orchestration
+├── docker-compose.yml                    # Multi-container orchestration stack
 ├── .github/workflows/ci.yml              # GitHub Actions CI/CD Pipeline
 ├── README.md                             # Comprehensive Engineering Documentation
 │
@@ -30,10 +30,48 @@ atlas-search/
 └── atlas-microservices/                  # Application Microservices
     ├── atlas-search-gateway/             # Query Router, Swagger & Redis Cache (Port 8081)
     ├── atlas-keyword-search/             # BM25 Inverted Index Engine & Swagger (Port 8082)
-    ├── atlas-crawler-worker/             # Multi-threaded Crawl Worker & Swagger (Port 8083)
+    ├── atlas-crawler-worker/             # Phase 1.2 Distributed Web Crawler Worker (Port 8083)
     ├── atlas-index-builder-worker/       # Index Segment File Builder & Swagger (Port 8084)
     └── atlas-ui/                         # Glassmorphic React TypeScript UI (Port 3000)
 ```
+
+---
+
+### Phase 1.2 Distributed Web Crawler Components
+
+1. **Crawl Scheduler (`CrawlSchedulerService`)**:
+   - Manages crawl job creation, execution state (`RUNNING`, `PAUSED`, `CANCELLED`, `COMPLETED`), and lifecycle control APIs.
+   - Configurable limits: `maxDepth`, `maxPages`, `maxConcurrency`, `timeoutSeconds`, `userAgent`.
+   - Persists crawl progress and URL status in PostgreSQL (`crawl_jobs` and `crawl_urls`).
+
+2. **URL Frontier (`UrlFrontier` & `UrlNormalizer`)**:
+   - Concurrent priority-queue URL scheduler enforcing URL deduplication (`jobId:normalizedUrl`).
+   - Normalization rules: Strips fragments (`#...`), standardizes HTTP/HTTPS ports (80/443), strips trailing slashes, resolves relative URLs.
+
+3. **robots.txt & sitemap.xml Support (`RobotsManager` & `SitemapParser`)**:
+   - Domain-level `robots.txt` parser evaluating `User-Agent`, `Allow`, `Disallow`, `Crawl-delay`, and `Sitemap` rules.
+   - Automatic `/sitemap.xml` discovery and `<loc>` seed URL extraction.
+
+4. **Resilient HTTP Client (`ResilientFetcher`)**:
+   - Production Java 21 `HttpClient` supporting connection pooling, GZIP decompression, redirect handling, and exponential backoff retry policies.
+
+5. **Kafka Raw HTML Pipeline (`RawDocumentProducer`)**:
+   - Publishes raw HTML pages to Kafka topic `crawl.raw.documents` containing: `documentId`, `jobId`, `url`, `normalizedUrl`, `depth`, `httpStatus`, `contentType`, `responseHeaders`, `rawHtml`, and `fetchTimestamp`.
+
+---
+
+### Crawl Management REST APIs
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/crawl/jobs` | Submit and dispatch new crawl job |
+| `GET` | `/api/v1/crawl/jobs` | List all registered crawl jobs |
+| `GET` | `/api/v1/crawl/jobs/{id}` | Fetch detailed crawl job status |
+| `POST` | `/api/v1/crawl/jobs/{id}/pause` | Pause an active crawl job |
+| `POST` | `/api/v1/crawl/jobs/{id}/resume` | Resume a paused crawl job |
+| `POST` | `/api/v1/crawl/jobs/{id}/cancel` | Cancel an active crawl job |
+| `GET` | `/api/v1/crawl/jobs/{id}/statistics` | Fetch job statistics (pages/sec, queued URLs) |
+| `GET` | `/api/v1/crawl/jobs/{id}/urls` | Fetch paged list of crawled URLs |
 
 ---
 

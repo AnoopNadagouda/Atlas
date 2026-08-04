@@ -25,5 +25,12 @@ public class CrawlJobRequest {
     @Builder.Default
     private int maxPages = 10000;
 
+    @Builder.Default
+    private int maxConcurrency = 5;
+
+    @Builder.Default
+    private int timeoutSeconds = 30;
+
     private String cronSchedule;
+    private String userAgent;
 }

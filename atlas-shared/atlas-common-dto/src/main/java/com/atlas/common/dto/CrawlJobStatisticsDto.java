@@ -6,22 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CrawlJobResponse {
+public class CrawlJobStatisticsDto {
     private String jobId;
     private String jobName;
     private CrawlStatus status;
-    private int maxDepth;
-    private int maxPages;
     private int pagesCrawled;
     private int pagesFailed;
-    private List<String> seedUrls;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private int urlsQueued;
+    private int urlsBlockedRobots;
+    private long elapsedTimeSeconds;
+    private double currentPagesPerSecond;
 }
