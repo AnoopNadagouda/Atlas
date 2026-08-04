@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 3.1: Distributed Replication, Fault Tolerance & Automatic Failover
+## Phase 3.2: Incremental Distributed Indexing & Background Merge Engine
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v3.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.1.0)
+[![Release](https://img.shields.io/badge/release-v3.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.2.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,34 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 3.2 Incremental Distributed Indexing & Background Merge Engine
+
+1. **Incremental Index Writer (`IncrementalIndexWriter`)**:
+   - Continuously writes new immutable index segments (`seg-inc-xxx`) for newly crawled documents without rebuilding the entire index.
+   - Instantly publishes new `ACTIVE` segments to the search engine.
+
+2. **Segment Registry & Lifecycle (`SegmentRegistry` & `SegmentState`)**:
+   - Tracks segment lifecycle states (`BUILDING`, `ACTIVE`, `MERGING`, `COMPACTING`, `OBSOLETE`, `FAILED`).
+   - Performs thread-safe atomic segment swaps upon merge completion.
+
+3. **Background Merge Engine (`BackgroundMergeEngine`)**:
+   - Automatically detects when small segments build up per shard.
+   - Compacts posting lists, positions, and dictionaries into consolidated merged segments (`seg-merged-xxx`).
+
+---
+
+### Phase 3.2 Index Management REST APIs (v5)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v5/index/segments` | Retrieve registered active, merging, and obsolete index segments |
+| `GET` | `/api/v5/index/merge/status` | Retrieve background merge engine status & policy metrics |
+| `POST` | `/api/v5/index/merge/start` | Manually trigger background segment compaction merge for a shard |
+| `POST` | `/api/v5/index/merge/cancel` | Cancel active background segment merge jobs |
+| `GET` | `/api/v5/index/statistics` | Incremental indexing stats, document counts & compaction ratios |
 
 ---
 
