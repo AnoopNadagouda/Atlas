@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 3.3: Link Graph, Distributed PageRank & Ranking Pipeline
+## Phase 3.4: Query Intelligence, Autocomplete, Spell Correction & Search Quality Framework
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v3.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.3.0)
+[![Release](https://img.shields.io/badge/release-v3.4.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.4.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,31 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 3.4 Query Intelligence, Autocomplete, Spell Correction & Search Quality Framework
+
+1. **Autocomplete Engine & Trie Data Structure (`AutocompleteService` & `Trie`)**:
+   - High-performance Trie prefix search engine delivering sub-millisecond query suggestions ranked by popularity.
+
+2. **Spell Check & Candidate Generator (`SpellCheckService`)**:
+   - Calculates Levenshtein Distance candidate suggestions to generate "Did You Mean?" spelling corrections for misspelled search queries.
+
+3. **Synonym Expansion & Query Rewriter (`QueryRewriteService` & `QueryIntelligencePipeline`)**:
+   - Expands query terms via synonym dictionary lookup and rewrites queries before passing to retrieval and ranking engines.
+
+---
+
+### Phase 3.4 Query Intelligence REST APIs (v7)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v7/query/autocomplete` | Sub-millisecond Trie prefix autocomplete query suggestions |
+| `POST` | `/api/v7/query/spellcheck` | Levenshtein distance spell checking & "Did You Mean" correction |
+| `POST` | `/api/v7/query/rewrite` | Synonym expansion and query rewriting |
+| `POST` | `/api/v7/query/analyze` | Unified Query Intelligence analysis (Language, Intent, Correction, Rewrite) |
+| `GET` | `/api/v7/query/statistics` | Autocomplete hit ratios, spell check accuracy & rewrite metrics |
 
 ---
 
