@@ -183,6 +183,22 @@ sequenceDiagram
 
 ---
 
+### Google Gemini API Integration & 400 INVALID_ARGUMENT Prevention
+
+1. **Pre-flight Validation (`GeminiRequestBuilder`)**:
+   - Validates prompt text pre-flight (rejects null or blank text before network call).
+   - Clamps generation config parameters (`temperature` $[0.0, 2.0]$, `topP` $[0.0, 1.0]$, `topK` $\ge 1$, `maxOutputTokens` $\ge 1$).
+
+2. **Official Gemini REST API Schema (`v1beta`)**:
+   - Target Model: `gemini-1.5-flash`
+   - Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`
+
+3. **Resilient Error Handling (`GeminiLlmProvider`)**:
+   - HTTP 400 Bad Request (`INVALID_ARGUMENT`): Logs payload details and throws `AtlasException` without retrying.
+   - Missing API Key or Network Failure: Automatically fails open to `LocalStubLlmProvider` to ensure zero service disruption.
+
+---
+
 ### Phase 2.4 Knowledge Graph & Entity-Aware Search
 
 1. **Knowledge Graph Service (`KnowledgeGraphService`)**:

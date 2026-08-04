@@ -2,11 +2,13 @@ package com.atlas.keywordsearch.copilot;
 
 import com.atlas.domain.copilot.LlmProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
 @Slf4j
+@Primary
 @Component("localStubLlmProvider")
 public class LocalStubLlmProvider implements LlmProvider {
 
