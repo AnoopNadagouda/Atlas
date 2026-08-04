@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 3.0: Distributed Search Cluster Foundation
+## Phase 3.1: Distributed Replication, Fault Tolerance & Automatic Failover
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v3.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.0.0)
+[![Release](https://img.shields.io/badge/release-v3.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.1.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,31 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 3.1 Distributed Replication, Fault Tolerance & Automatic Failover
+
+1. **Replication Manager (`ReplicationManager`)**:
+   - Manages primary/replica shard topologies, replica synchronization states (`INITIALIZING`, `SYNCING`, `ACTIVE`, `FAILED`, `PROMOTED`), and manual/automatic replica promotions.
+
+2. **Failure Detector (`FailureDetector`)**:
+   - Continuously monitors node heartbeats (15s timeout window). Detects node crashes or network partitions and automatically promotes healthy replicas to primary.
+
+3. **Atomic Cluster Routing Engine (`ClusterRoutingEngine`)**:
+   - Maintains an atomic `RoutingTableEntry` with epoch and version tracking. Routes read queries across primary and active read-replicas.
+
+---
+
+### Phase 3.1 High Availability REST APIs (v4)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v4/cluster/routing` | Retrieve atomic cluster routing table with epoch & version |
+| `GET` | `/api/v4/cluster/replicas` | List replica synchronization states & sync lag metrics |
+| `GET` | `/api/v4/cluster/failover` | Retrieve automatic failover status & heartbeat monitor metrics |
+| `POST` | `/api/v4/cluster/promote` | Manually promote a replica node to primary for a target shard |
+| `POST` | `/api/v4/cluster/recover` | Initiate node recovery and resynchronize routing table |
 
 ---
 
