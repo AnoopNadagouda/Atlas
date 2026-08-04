@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3 } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
 
   const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact]. Distributed search coordinator fanned out query across 2 active cluster shards.";
+
+  const mockRanking = {
+    docId: 'doc-foundation-001',
+    weights: { rrf: '40%', pageRank: '35%', freshness: '25%' },
+    signals: { bm25: 0.892, semantic: 0.945, rrf: 0.0328, pageRank: 0.384, freshness: 0.95 },
+    finalScore: 0.478
+  };
 
   const mockCluster = {
     clusterName: 'atlas-search-cluster',
@@ -40,7 +47,8 @@ export const SearchPage: React.FC = () => {
       bm25Score: 0.892,
       semanticScore: 0.945,
       rrfScore: 0.0328,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER'],
+      pageRankScore: 0.384,
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK'],
     },
     {
       id: 'doc-bm25-002',
@@ -50,15 +58,16 @@ export const SearchPage: React.FC = () => {
       bm25Score: 0.941,
       semanticScore: 0.720,
       rrfScore: 0.0315,
-      sources: ['KEYWORD', 'HYBRID'],
+      pageRankScore: 0.210,
+      sources: ['KEYWORD', 'HYBRID', 'PAGERANK'],
     },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Distributed Cluster</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, Knowledge Graph, Grounded AI Copilot (RAG), and Distributed Cluster Sharding.</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Ranking Pipeline</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, PageRank, Freshness Decay, Knowledge Graph, and Distributed Cluster Sharding.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -67,7 +76,7 @@ export const SearchPage: React.FC = () => {
             <input
               type="text"
               className="input-field"
-              placeholder="Ask AI Search Copilot, explore Knowledge Graph, or search distributed cluster..."
+              placeholder="Ask AI Search Copilot, inspect PageRank, or search distributed cluster..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               style={{ paddingLeft: '44px' }}
@@ -87,6 +96,13 @@ export const SearchPage: React.FC = () => {
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
             <Bot size={14} /> AI Search Copilot (RAG)
+          </button>
+          <button
+            className={`btn ${searchMode === 'ranking' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('ranking')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <BarChart3 size={14} /> Ranking Inspector
           </button>
           <button
             className={`btn ${searchMode === 'cluster' ? 'btn-primary' : 'btn-secondary'}`}
@@ -125,6 +141,50 @@ export const SearchPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {searchMode === 'ranking' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #ec4899' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f472b6', fontWeight: 600 }}>
+              <BarChart3 size={20} /> Multi-Signal Ranking Pipeline & PageRank Inspector
+            </div>
+            <span className="badge badge-info">Final Composition Score: {mockRanking.finalScore}</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target Document ID</span>
+              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f3f4f6' }}>{mockRanking.docId}</div>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Signal Weight Mix</span>
+              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f472b6' }}>RRF {mockRanking.weights.rrf} | PageRank {mockRanking.weights.pageRank} | Freshness {mockRanking.weights.freshness}</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Ranking Signal Breakdown:</span>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>BM25 Score</div>
+                <strong style={{ fontSize: '1.1rem', color: '#818cf8' }}>{mockRanking.signals.bm25}</strong>
+              </div>
+              <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Semantic Vector</div>
+                <strong style={{ fontSize: '1.1rem', color: '#818cf8' }}>{mockRanking.signals.semantic}</strong>
+              </div>
+              <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Distributed PageRank</div>
+                <strong style={{ fontSize: '1.1rem', color: '#ec4899' }}>{mockRanking.signals.pageRank}</strong>
+              </div>
+              <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Freshness Decay</div>
+                <strong style={{ fontSize: '1.1rem', color: '#10b981' }}>{mockRanking.signals.freshness}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {searchMode === 'cluster' && (
         <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #3b82f6' }}>
@@ -229,7 +289,7 @@ export const SearchPage: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
           <span>Grounded Retrieval Results ({mockResults.length} indexed documents)</span>
-          <span>Distributed Search Coordinator Latency: 18ms (Shards: 2 Active)</span>
+          <span>Ranking Pipeline Latency: 21ms (Signals: BM25, Vector, RRF, PageRank, Freshness)</span>
         </div>
 
         {mockResults.map((result) => (
@@ -250,6 +310,7 @@ export const SearchPage: React.FC = () => {
             <div style={{ display: 'flex', gap: '16px', fontSize: '0.75rem', color: 'var(--text-dim)', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
               <span>BM25 Score: <strong>{result.bm25Score}</strong></span>
               <span>Semantic Score: <strong>{result.semanticScore}</strong></span>
+              <span>PageRank Score: <strong>{result.pageRankScore}</strong></span>
               <span>RRF Fusion Score: <strong>{result.rrfScore}</strong></span>
             </div>
           </div>

@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 3.2: Incremental Distributed Indexing & Background Merge Engine
+## Phase 3.3: Link Graph, Distributed PageRank & Ranking Pipeline
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v3.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.2.0)
+[![Release](https://img.shields.io/badge/release-v3.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.3.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,30 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 3.3 Link Graph, Distributed PageRank & Ranking Pipeline
+
+1. **Distributed Link Graph (`LinkGraphService`)**:
+   - Builds and maintains directed web graph topology, tracking in-degree and out-degree hyperlink connections between crawled web documents.
+
+2. **Iterative PageRank Engine (`PageRankEngine`)**:
+   - Power iteration PageRank calculation with damping factor $d = 0.85$, max iterations, and convergence threshold $\epsilon = 0.0001$.
+
+3. **Freshness Scorer & Unified Ranking Pipeline (`FreshnessScorer` & `RankingPipeline`)**:
+   - Calculates time decay score boost ($e^{-\lambda \cdot \Delta t}$) and fuses signals ($BM25 + Semantic + RRF + PageRank + Freshness$).
+
+---
+
+### Phase 3.3 Ranking REST APIs (v6)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v6/ranking/pagerank/run` | Execute iterative PageRank power calculation across web graph |
+| `GET` | `/api/v6/ranking/pagerank/status` | Retrieve PageRank calculation status, damping factor & convergence |
+| `GET` | `/api/v6/ranking/statistics` | Multi-signal ranking pipeline weights, graph size & statistics |
+| `GET` | `/api/v6/ranking/document/{id}` | Retrieve document PageRank score, iteration & convergence state |
 
 ---
 
