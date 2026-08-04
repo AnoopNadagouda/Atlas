@@ -1,0 +1,29 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { Sidebar } from './components/Sidebar';
+import { Home } from './pages/Home';
+import { SearchPage } from './pages/SearchPage';
+import { CrawlerPage } from './pages/CrawlerPage';
+import { StatusPage } from './pages/StatusPage';
+
+const App: React.FC = () => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navbar />
+      <div style={{ display: 'flex', flex: 1 }}>
+        <Sidebar />
+        <main style={{ flex: 1, padding: '32px', maxWidth: '1400px' }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/crawler" element={<CrawlerPage />} />
+            <Route path="/status" element={<StatusPage />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default App;

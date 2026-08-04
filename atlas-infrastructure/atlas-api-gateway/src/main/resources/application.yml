@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: atlas-api-gateway
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+      routes:
+        - id: search-gateway-service
+          uri: ${SEARCH_GATEWAY_URI:http://localhost:8081}
+          predicates:
+            - Path=/api/v1/search/**
+        - id: keyword-search-service
+          uri: ${KEYWORD_SEARCH_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/keyword-search/**
+        - id: crawler-worker-service
+          uri: ${CRAWLER_WORKER_URI:http://localhost:8083}
+          predicates:
+            - Path=/api/v1/crawl/**
+        - id: index-builder-service
+          uri: ${INDEX_BUILDER_URI:http://localhost:8084}
+          predicates:
+            - Path=/api/v1/index/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,gateway
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: INFO

@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # Infrastructure Datastores
+  postgres:
+    image: postgres:16-alpine
+    container_name: atlas-postgres
+    environment:
+      POSTGRES_DB: atlas_search
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: atlas_password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atlas -d atlas_search"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: atlas-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: atlas-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: atlas-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # Config Service
+  atlas-config-service:
+    build:
+      context: .
+      dockerfile: atlas-infrastructure/atlas-config-service/Dockerfile
+    container_name: atlas-config-service
+    ports:
+      - "8888:8888"
+
+  # API Gateway
+  atlas-api-gateway:
+    build:
+      context: .
+      dockerfile: atlas-infrastructure/atlas-api-gateway/Dockerfile
+    container_name: atlas-api-gateway
+    depends_on:
+      - redis
+      - atlas-config-service
+    ports:
+      - "8080:8080"
+    environment:
+      REDIS_HOST: redis
+      SEARCH_GATEWAY_URI: http://atlas-search-gateway:8081
+      KEYWORD_SEARCH_URI: http://atlas-keyword-search:8082
+      CRAWLER_WORKER_URI: http://atlas-crawler-worker:8083
+      INDEX_BUILDER_URI: http://atlas-index-builder-worker:8084
+
+  # Microservices
+  atlas-search-gateway:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-search-gateway/Dockerfile
+    container_name: atlas-search-gateway
+    depends_on:
+      - redis
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+  atlas-keyword-search:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-keyword-search/Dockerfile
+    container_name: atlas-keyword-search
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_search
+      SPRING_DATASOURCE_USERNAME: atlas
+      SPRING_DATASOURCE_PASSWORD: atlas_password
+      REDIS_HOST: redis
+
+  atlas-crawler-worker:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-crawler-worker/Dockerfile
+    container_name: atlas-crawler-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_search
+      SPRING_DATASOURCE_USERNAME: atlas
+      SPRING_DATASOURCE_PASSWORD: atlas_password
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+  atlas-index-builder-worker:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-index-builder-worker/Dockerfile
+    container_name: atlas-index-builder-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_search
+      SPRING_DATASOURCE_USERNAME: atlas
+      SPRING_DATASOURCE_PASSWORD: atlas_password
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+  # React Frontend
+  atlas-ui:
+    build:
+      context: ./atlas-ui
+      dockerfile: Dockerfile
+    container_name: atlas-ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - atlas-api-gateway
