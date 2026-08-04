@@ -1,5 +1,5 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 1.3: HTML Parser & Document Cleaning Pipeline
+## Phase 1.4: Custom Inverted Index Engine
 
 **Atlas** is an enterprise-grade, cloud-native distributed AI search platform built to crawl, index, rank, and semantically search multi-modal documents at a scale exceeding **1 Billion documents**.
 
@@ -32,7 +32,7 @@ atlas-search/
     ├── atlas-keyword-search/             # BM25 Inverted Index Engine & Swagger (Port 8082)
     ├── atlas-crawler-worker/             # Phase 1.2 Distributed Web Crawler Worker (Port 8083)
     ├── atlas-parser-service/             # Phase 1.3 HTML Parser & Document Cleaner (Port 8085)
-    ├── atlas-index-builder-worker/       # Index Segment File Builder & Swagger (Port 8084)
+    ├── atlas-index-builder-worker/       # Phase 1.4 Custom Inverted Index Engine (Port 8084)
     └── atlas-ui/                         # Glassmorphic React TypeScript UI (Port 3000)
 ```
 
@@ -108,6 +108,45 @@ atlas-search/
 | `GET` | `/api/v1/parser/duplicates` | Fetch paged list of detected duplicates |
 | `GET` | `/api/v1/parser/failures` | Fetch paged list of parsing validation failures |
 | `GET` | `/api/v1/parser/health` | Service health status |
+
+---
+
+### Phase 1.4 Custom Inverted Index Engine Components
+
+1. **Text Analysis Engine (`TextAnalyzer`)**:
+   - **`Tokenizer`**: Splits text into tokens preserving hyphens (`cloud-native`) and numbers.
+   - **`NormalizerEngine`**: Lowercase & Unicode NFC normalization.
+   - **`StopWordFilter`**: Language-aware stop word filter (removes common English stop words `the`, `is`, `and`, etc.).
+   - **`PorterStemmer`**: Extensible Porter Stemmer algorithm reducing word variations to base stems.
+
+2. **Posting List Structure (`PostingList` & `Posting`)**:
+   - Maintains term-to-posting dictionary:
+     - Document Frequency ($df$): Number of unique documents containing the term.
+     - Collection Frequency ($cf$): Total occurrences across all documents.
+     - Postings Entry: `docId`, Term Frequency ($tf$), exact token `positions` array, and `fieldFlags` (`TITLE`, `BODY`, `HEADING`).
+
+3. **Segmented Index Persistence (`SegmentWriter`)**:
+   - Accumulates in-memoryPosting dictionary batches and serializes immutable segments to disk (`./data/index_segments/{segment_id}/`).
+   - On-Disk Storage Format:
+     - `dict.json`: Vocabulary terms with document frequencies ($df$) and collection frequencies ($cf$).
+     - `postings.json`: Full posting lists with document frequencies, positions, and field bitmasks.
+     - `segment_meta.json`: Segment ID, document count, vocabulary size, total term count, createdAt.
+
+4. **Index Coordinator & Metadata (`IndexCoordinatorService`)**:
+   - Consumes clean documents from Kafka topic `document.cleaned`.
+   - Coordinates multi-field indexing (`TITLE`, `BODY`, `HEADING`), batch segment flushes, and persists segment metadata to PostgreSQL.
+
+---
+
+### Inverted Index REST APIs
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/index/build` | Trigger manual segment flush to disk |
+| `GET` | `/api/v1/index/statistics` | Collection statistics (total docs, terms, vocab size, segments) |
+| `GET` | `/api/v1/index/segments` | List all active immutable index segments |
+| `GET` | `/api/v1/index/segments/{id}` | Fetch detailed index segment metadata |
+| `GET` | `/api/v1/index/status` | Inverted index engine service status |
 
 ---
 
