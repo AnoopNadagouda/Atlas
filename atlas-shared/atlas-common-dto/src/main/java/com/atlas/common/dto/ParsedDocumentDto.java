@@ -1,4 +1,4 @@
-package com.atlas.kafka.events;
+package com.atlas.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,26 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CleanedDocumentEvent {
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ExtractedLinkItem {
-        private String sourceUrl;
-        private String targetUrl;
-        private String anchorText;
-        private boolean isExternal;
-    }
-
-    private String documentId;
+public class ParsedDocumentDto {
+    private String id;
     private String jobId;
     private String url;
     private String normalizedUrl;
@@ -33,9 +20,7 @@ public class CleanedDocumentEvent {
     private String domain;
     private String title;
     private String description;
-    private String cleanText;
-    private List<String> headings;
-    private List<ExtractedLinkItem> extractedLinks;
+    private String cleanTextPreview;
     private String language;
     private double languageConfidence;
     private boolean isDuplicate;
@@ -44,5 +29,5 @@ public class CleanedDocumentEvent {
     private long simhash;
     private String contentHash;
     private int contentLength;
-    private Instant timestamp;
+    private Instant processedAt;
 }

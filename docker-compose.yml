@@ -131,6 +131,27 @@ services:
       REDIS_HOST: redis
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
+  atlas-parser-service:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-parser-service/Dockerfile
+    container_name: atlas-parser-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_db
+      SPRING_DATASOURCE_USERNAME: atlas
+      SPRING_DATASOURCE_PASSWORD: atlas_password
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
   atlas-index-builder-worker:
     build:
       context: .

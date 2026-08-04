@@ -26,6 +26,7 @@
         <!-- Library Versions -->
         <lombok.version>1.18.32</lombok.version>
         <testcontainers.version>1.19.7</testcontainers.version>
+        <jsoup.version>1.17.2</jsoup.version>
     </properties>
 
     <modules>
@@ -45,6 +46,7 @@
         <module>atlas-microservices/atlas-search-gateway</module>
         <module>atlas-microservices/atlas-keyword-search</module>
         <module>atlas-microservices/atlas-crawler-worker</module>
+        <module>atlas-microservices/atlas-parser-service</module>
         <module>atlas-microservices/atlas-index-builder-worker</module>
     </modules>
 
@@ -109,6 +111,11 @@
                 <groupId>com.atlas</groupId>
                 <artifactId>atlas-logging</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.atlas</groupId>

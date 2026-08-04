@@ -1,5 +1,5 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 1.2: Distributed Web Crawler Foundation
+## Phase 1.3: HTML Parser & Document Cleaning Pipeline
 
 **Atlas** is an enterprise-grade, cloud-native distributed AI search platform built to crawl, index, rank, and semantically search multi-modal documents at a scale exceeding **1 Billion documents**.
 
@@ -19,7 +19,7 @@ atlas-search/
 │   ├── atlas-core-domain/                # Base domain models, value objects, exceptions
 │   ├── atlas-common-dto/                 # Standardized ApiResponse<T>, DTOs & PageResponse
 │   ├── atlas-common-utils/               # Centralized String, JSON, Hash, Retry, File, Regex utils
-│   ├── atlas-kafka-events/               # Shared Kafka event payloads (CrawlSeed, RawDoc, etc.)
+│   ├── atlas-kafka-events/               # Shared Kafka event payloads (CrawlSeed, RawDoc, CleanDoc)
 │   ├── atlas-logging/                    # MDC Correlation ID (X-Correlation-ID) tracing & version controller
 │   └── atlas-test-support/               # BaseUnitTest, BaseIntegrationTest & Testcontainers setup
 │
@@ -31,6 +31,7 @@ atlas-search/
     ├── atlas-search-gateway/             # Query Router, Swagger & Redis Cache (Port 8081)
     ├── atlas-keyword-search/             # BM25 Inverted Index Engine & Swagger (Port 8082)
     ├── atlas-crawler-worker/             # Phase 1.2 Distributed Web Crawler Worker (Port 8083)
+    ├── atlas-parser-service/             # Phase 1.3 HTML Parser & Document Cleaner (Port 8085)
     ├── atlas-index-builder-worker/       # Index Segment File Builder & Swagger (Port 8084)
     └── atlas-ui/                         # Glassmorphic React TypeScript UI (Port 3000)
 ```
@@ -72,6 +73,41 @@ atlas-search/
 | `POST` | `/api/v1/crawl/jobs/{id}/cancel` | Cancel an active crawl job |
 | `GET` | `/api/v1/crawl/jobs/{id}/statistics` | Fetch job statistics (pages/sec, queued URLs) |
 | `GET` | `/api/v1/crawl/jobs/{id}/urls` | Fetch paged list of crawled URLs |
+
+---
+
+### Phase 1.3 HTML Parser & Document Cleaner Components
+
+1. **HTML Parsing & Boilerplate Removal (`HtmlParserEngine`)**:
+   - JSoup-powered HTML DOM extraction removing non-content nodes (`<script>`, `<style>`, `<nav>`, `<footer>`, `<aside>`, `.ad`, `.banner`, `.cookie`).
+   - Extracts document metadata: `title`, `description`, `keywords`, `canonicalUrl`, `headings` (H1-H6), and `cleanText`.
+
+2. **Text Normalization**:
+   - Unicode NFC normalization, HTML entity decoding, control character removal, and whitespace collapse.
+
+3. **Multi-Strategy Duplicate Detection (`DocumentCleanerPipeline`)**:
+   - **Exact Content Hash**: SHA-256 hash comparison against stored document hashes.
+   - **Canonical URL Matching**: Identifies alternate URLs pointing to identical canonical sources.
+   - **Near-Duplicate Detection (SimHash)**: Calculates 64-bit SimHash fingerprints and checks Hamming distance ($\le 3$ threshold).
+
+4. **Language Detection & Link Extraction (`LanguageDetector` & `ParsedLinkEntity`)**:
+   - Heuristic language detection returning primary language ISO code and confidence score.
+   - Extracts all valid `<a href="...">` hyperlinks (internal/external) into `parsed_links` database table for future PageRank calculations.
+
+5. **Kafka Publishing (`CleanedDocumentProducer`)**:
+   - Consumes from `crawl.raw.documents` and publishes cleaned structured events to `document.cleaned` and `crawl.cleaned.documents`.
+
+---
+
+### Document Parser REST APIs
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v1/parser/statistics` | Real-time parser statistics (processed, duplicates, duplicate rate) |
+| `GET` | `/api/v1/parser/documents/{id}` | Fetch parsed document metadata & preview |
+| `GET` | `/api/v1/parser/duplicates` | Fetch paged list of detected duplicates |
+| `GET` | `/api/v1/parser/failures` | Fetch paged list of parsing validation failures |
+| `GET` | `/api/v1/parser/health` | Service health status |
 
 ---
 
