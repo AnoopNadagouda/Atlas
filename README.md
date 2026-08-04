@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 1 Production Release (v1.0.0) — Distributed Keyword Search Engine
+## Phase 2.0: Modern AI Search Foundation
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v1.0.0)
+[![Release](https://img.shields.io/badge/release-v2.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.0.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,32 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 2.0 Modern AI Search Foundation
+
+1. **Feature Flags Framework (`AtlasFeatureProperties`)**:
+   - `atlas.features.semantic-search` (default `false`)
+   - `atlas.features.hybrid-search` (default `false`)
+   - `atlas.features.vector-search` (default `false`)
+   - `atlas.features.ai-copilot` (default `false`)
+   - `atlas.features.knowledge-graph` (default `false`)
+
+2. **Query Planner (`QueryPlannerService`)**:
+   - Classifies query intent and dynamically selects the retrieval strategy (`KEYWORD_BM25`, `SEMANTIC_VECTOR`, `HYBRID_RRF`, `AI_COPILOT`).
+
+3. **Modular Search Pipeline (`SearchPipelineOrchestrator`)**:
+   - Refactored 5-stage search execution pipeline:
+     1. `ParsingStage`: AST query parsing
+     2. `PlanningStage`: Intent & strategy planning
+     3. `RetrievalStage`: BM25 inverted index lookup (and vector search contract)
+     4. `RankingStage`: Robertson-Spärck Jones BM25 score ranking
+     5. `ResponseBuildingStage`: Highlighted passage snippet generation & pagination
+
+4. **Vector Search & Embedding Abstractions**:
+   - `VectorStore` interface supporting interchangeable vector databases (`PgVectorAdapter`, `QdrantVectorAdapter`).
+   - `EmbeddingProvider` interface (`NoOpEmbeddingProvider`) & `EmbeddingService` for dense vector embedding generation contracts.
 
 ---
 
