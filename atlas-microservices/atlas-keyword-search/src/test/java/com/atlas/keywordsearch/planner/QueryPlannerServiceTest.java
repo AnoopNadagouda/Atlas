@@ -20,6 +20,9 @@ class QueryPlannerServiceTest {
 
     @Test
     void testDefaultKeywordStrategy() {
+        featureProperties.setHybridSearch(false);
+        featureProperties.setSemanticSearch(false);
+
         ParsedQuery query = ParsedQuery.builder().rawQuery("atlas search").build();
         QueryPlan plan = queryPlannerService.plan(query);
 

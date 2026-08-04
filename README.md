@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 2.1: Semantic Search & Embedding Infrastructure
+## Phase 2.2: Hybrid Search Engine & Reciprocal Rank Fusion (RRF)
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v2.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.1.0)
+[![Release](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.2.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,31 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 2.2 Hybrid Search Engine & Reciprocal Rank Fusion (RRF)
+
+1. **Parallel Hybrid Search Engine (`HybridSearchService`)**:
+   - Executes BM25 keyword retrieval and 384-dimensional HNSW ANN semantic vector retrieval simultaneously using Java 21 `CompletableFuture` and Virtual Threads.
+   - Handles partial failures gracefully (fails open to remaining active retrieval engine if one encounters a timeout or exception).
+
+2. **Reciprocal Rank Fusion Engine (`ReciprocalRankFusionEngine`)**:
+   - Implements Reciprocal Rank Fusion from scratch using formula:
+     $$\text{RRF}(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
+     where $k$ is configurable (`atlas.hybrid.rrf.k=60`).
+   - Merges duplicate document IDs, preserving original BM25 scores, Semantic vector scores, RRF fusion scores, keyword ranks, semantic ranks, and retrieval sources (`"KEYWORD"`, `"SEMANTIC"`, `"HYBRID"`).
+
+---
+
+### Phase 2.2 Hybrid Search REST APIs (v2)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v2/search/hybrid` | Execute parallel Hybrid Search (BM25 + Semantic Vector + RRF Fusion) |
+| `GET` | `/api/v2/search/hybrid/statistics` | RRF fusion statistics, algorithm type, parallel execution status |
+| `GET` | `/api/v2/search/hybrid/config` | Hybrid search configuration parameters (k=60, timeoutMs) |
+| `GET` | `/api/v2/search/planner` | Query Planner active retrieval strategy status |
 
 ---
 

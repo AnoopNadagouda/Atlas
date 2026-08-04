@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "atlas.features")
 public class AtlasFeatureProperties {
-    private boolean semanticSearch = false;
-    private boolean hybridSearch = false;
-    private boolean vectorSearch = false;
+    private boolean keywordSearch = true;
+    private boolean semanticSearch = true;
+    private boolean hybridSearch = true;
+    private boolean vectorSearch = true;
     private boolean aiCopilot = false;
     private boolean knowledgeGraph = false;
 }

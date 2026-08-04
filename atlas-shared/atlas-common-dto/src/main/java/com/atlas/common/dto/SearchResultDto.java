@@ -20,10 +20,15 @@ public class SearchResultDto {
     private double score;
     private double bm25Score;
     private double vectorScore;
+    private double rrfScore;
     private double pageRankScore;
+    private int keywordRank;
+    private int semanticRank;
+    private int finalRank;
     private String domain;
     private Set<String> matchedTerms;
     private Set<String> matchedFields;
+    private Set<String> retrievalSources;
     private Map<String, Double> termContributions;
     private Map<String, Object> metadata;
 }
