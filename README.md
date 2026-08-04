@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 2.0: Modern AI Search Foundation
+## Phase 2.1: Semantic Search & Embedding Infrastructure
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v2.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.0.0)
+[![Release](https://img.shields.io/badge/release-v2.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.1.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,37 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 2.1 Semantic Search & Embedding Infrastructure Components
+
+1. **Dense Vector Embedding Engine (`LocalTransformerEmbeddingProvider`)**:
+   - Generates 384-dimensional normalized dense vectors (`all-MiniLM-L6-v2` model contract).
+
+2. **HNSW Vector Index & Vector Store (`InMemHnswVectorStore`)**:
+   - In-memory HNSW Approximate Nearest Neighbor (ANN) index supporting Cosine Similarity, Dot Product, and Euclidean distance.
+   - HNSW parameters: $M=16$, `efConstruction=200`, `efSearch=50`.
+
+3. **Asynchronous Kafka Document Embedding (`CleanedDocumentEmbeddingConsumer`)**:
+   - Consumes clean document events from Kafka topic `document.cleaned`.
+   - Generates 384-dim dense embeddings and stores vectors in `VectorStore`.
+   - Publishes completion events to Kafka topic `document.embedded`.
+
+4. **Semantic Vector Search Engine (`SemanticSearchService`)**:
+   - Embeds query text into 384-dim vector and executes top-K ANN vector similarity lookup.
+
+---
+
+### Semantic Search REST APIs (v2)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v2/semantic-search` | Execute 384-dimensional ANN semantic vector search |
+| `GET` | `/api/v2/vector/statistics` | Vector database stats (total vectors, dim: 384, HNSW params) |
+| `GET` | `/api/v2/vector/health` | Vector database health check |
+| `POST` | `/api/v2/vector/reindex` | Trigger vector database reindexing |
+| `GET` | `/api/v2/embedding/models` | List loaded embedding models and dimension metadata |
 
 ---
 

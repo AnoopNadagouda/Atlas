@@ -12,6 +12,7 @@ public final class AtlasConstants {
     public static final String TOPIC_CRAWL_URLS_SEED = "crawl.urls.seed";
     public static final String TOPIC_CRAWL_RAW_DOCUMENTS = "crawl.raw.documents";
     public static final String TOPIC_DOCUMENT_CLEANED = "document.cleaned";
+    public static final String TOPIC_DOCUMENT_EMBEDDED = "document.embedded";
     public static final String TOPIC_CRAWL_PARSED_DOCUMENTS = "crawl.parsed.documents";
     public static final String TOPIC_CRAWL_CLEANED_DOCUMENTS = "crawl.cleaned.documents";
     public static final String TOPIC_INDEX_BUILD_TASKS = "index.build.tasks";
