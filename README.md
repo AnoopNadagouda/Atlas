@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 2.4: Knowledge Graph & Entity-Aware Search
+## Phase 3.0: Distributed Search Cluster Foundation
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v2.4.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v2.4.0)
+[![Release](https://img.shields.io/badge/release-v3.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.0.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,31 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 3.0 Distributed Search Cluster Foundation
+
+1. **Cluster Manager (`ClusterManager`)**:
+   - Manages automatic node registration, heartbeats, node status (`HEALTHY`, `DEGRADED`, `UNHEALTHY`, `OFFLINE`), and cluster health aggregation (`GREEN`, `YELLOW`, `RED`).
+
+2. **Sharding Framework (`ShardingStrategy` & `HashShardingStrategy`)**:
+   - Hash-based MurmurHash-3 shard routing framework mapping document keys and queries to active cluster search shards.
+
+3. **Search Coordinator (`SearchCoordinator`)**:
+   - Coordinates scatter-gather query execution across active search nodes and merges ranked retrieval responses.
+
+---
+
+### Phase 3.0 Cluster Management REST APIs (v4)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v4/cluster/nodes` | List registered active search cluster nodes |
+| `GET` | `/api/v4/cluster/health` | Cluster health status, healthy node counts & active shards |
+| `GET` | `/api/v4/cluster/shards` | Retrieve active shard metadata & node assignments |
+| `GET` | `/api/v4/cluster/statistics` | Cluster statistics, sharding strategy & node capacity |
+| `POST` | `/api/v4/cluster/rebalance` | Trigger cluster shard rebalancing across healthy nodes |
 
 ---
 

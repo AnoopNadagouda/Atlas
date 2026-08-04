@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
 
-  const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact].";
+  const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact]. Distributed search coordinator fanned out query across 2 active cluster shards.";
+
+  const mockCluster = {
+    clusterName: 'atlas-search-cluster',
+    status: 'GREEN',
+    nodeId: 'search-node-1',
+    shards: [
+      { id: 'shard-0', docs: '500,000', size: '128 MB', status: 'ACTIVE', primary: true },
+      { id: 'shard-1', docs: '500,000', size: '128 MB', status: 'ACTIVE', primary: true },
+    ]
+  };
 
   const mockEntityCard = {
     name: 'Atlas Search Engine',
@@ -30,7 +40,7 @@ export const SearchPage: React.FC = () => {
       bm25Score: 0.892,
       semanticScore: 0.945,
       rrfScore: 0.0328,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH'],
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER'],
     },
     {
       id: 'doc-bm25-002',
@@ -47,8 +57,8 @@ export const SearchPage: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & AI Copilot</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, Knowledge Graph Navigation, and Grounded AI Copilot (RAG).</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Distributed Cluster</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test Keyword (BM25), Semantic Vector, Parallel Hybrid RRF, Knowledge Graph, Grounded AI Copilot (RAG), and Distributed Cluster Sharding.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -57,7 +67,7 @@ export const SearchPage: React.FC = () => {
             <input
               type="text"
               className="input-field"
-              placeholder="Ask AI Search Copilot, explore Knowledge Graph, or search indexed documents..."
+              placeholder="Ask AI Search Copilot, explore Knowledge Graph, or search distributed cluster..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               style={{ paddingLeft: '44px' }}
@@ -77,6 +87,13 @@ export const SearchPage: React.FC = () => {
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
             <Bot size={14} /> AI Search Copilot (RAG)
+          </button>
+          <button
+            className={`btn ${searchMode === 'cluster' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('cluster')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <Server size={14} /> Cluster Dashboard
           </button>
           <button
             className={`btn ${searchMode === 'graph' ? 'btn-primary' : 'btn-secondary'}`}
@@ -108,6 +125,47 @@ export const SearchPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {searchMode === 'cluster' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #3b82f6' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#60a5fa', fontWeight: 600 }}>
+              <Server size={20} /> Distributed Search Cluster Manager & Shard Routing
+            </div>
+            <span className="badge badge-info">Cluster Status: {mockCluster.status}</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Cluster Name</span>
+              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f3f4f6' }}>{mockCluster.clusterName}</div>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Active Coordinator Node</span>
+              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#60a5fa' }}>{mockCluster.nodeId}</div>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Sharding Strategy</span>
+              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f3f4f6' }}>HashShardingStrategy (MurmurHash-3)</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Shard Distribution & Routing Table:</span>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              {mockCluster.shards.map((s) => (
+                <div key={s.id} style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px', flex: 1, minWidth: '200px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <strong style={{ color: '#818cf8' }}>{s.id}</strong>
+                    <span className="badge badge-info">{s.status}</span>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Docs: {s.docs} | Size: {s.size}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {(searchMode === 'copilot' || searchMode === 'graph') && (
         <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #10b981' }}>
@@ -171,7 +229,7 @@ export const SearchPage: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
           <span>Grounded Retrieval Results ({mockResults.length} indexed documents)</span>
-          <span>Entity-Aware Latency: 16ms (Graph Engine: InMemGraphStore)</span>
+          <span>Distributed Search Coordinator Latency: 18ms (Shards: 2 Active)</span>
         </div>
 
         {mockResults.map((result) => (
