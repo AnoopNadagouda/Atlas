@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock, LineChart } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops' | 'analytics'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
 
   const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact]. Distributed search coordinator fanned out query across 2 active cluster shards.";
+
+  const mockAnalytics = {
+    quality: { ndcg: 0.894, precision: 0.850, recall: 0.912, mrr: 0.925, ctr: '42.5%', zeroResultRate: '1.2%' },
+    experiment: { id: 'exp-001', name: 'PageRank Heavy Ranking Experiment', trafficSplit: '25%', activeProfile: 'PAGERANK_HEAVY', status: 'RUNNING' }
+  };
 
   const mockOps = {
     health: { status: 'UP', postgresql: 'UP', kafka: 'UP', redis: 'UP' },
@@ -44,19 +49,6 @@ export const SearchPage: React.FC = () => {
     ]
   };
 
-  const mockEntityCard = {
-    name: 'Atlas Search Engine',
-    type: 'PRODUCT',
-    category: 'Distributed Search Platform',
-    confidence: '99%',
-    connectedTechnologies: [
-      { name: 'Spring Boot', relation: 'USES', type: 'FRAMEWORK' },
-      { name: 'Apache Kafka', relation: 'USES', type: 'EVENT_STREAMING' },
-      { name: 'PostgreSQL', relation: 'USES', type: 'DATABASE' },
-      { name: 'Redis', relation: 'USES', type: 'CACHE' },
-    ]
-  };
-
   const mockResults = [
     {
       id: 'doc-foundation-001',
@@ -67,7 +59,7 @@ export const SearchPage: React.FC = () => {
       semanticScore: 0.945,
       rrfScore: 0.0328,
       pageRankScore: 0.384,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK', 'ENTERPRISE'],
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK', 'ANALYTICS'],
     },
     {
       id: 'doc-bm25-002',
@@ -85,8 +77,8 @@ export const SearchPage: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Enterprise Operations Foundation</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Query Intelligence, Autocomplete, Grounded AI Copilot, Micrometer Observability, JWT Security, and Enterprise Operations Dashboard.</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Analytics Platform</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test Search Analytics, Relevance Quality (NDCG@10, MRR), A/B Ranking Experiments, Autocomplete, Grounded AI Copilot, and Operations Dashboard.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -107,13 +99,6 @@ export const SearchPage: React.FC = () => {
           </button>
         </div>
 
-        {query.length > 0 && (
-          <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '6px', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem' }}>
-            <HelpCircle size={16} style={{ color: '#818cf8' }} />
-            <span>Did you mean: <strong style={{ color: '#60a5fa', cursor: 'pointer' }} onClick={() => setQuery(mockQueryAnalysis.correctedQuery)}>{mockQueryAnalysis.correctedQuery}</strong>? (Spell Check Confidence: {mockQueryAnalysis.confidence})</span>
-          </div>
-        )}
-
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Retrieval Mode:</span>
           <button
@@ -122,6 +107,13 @@ export const SearchPage: React.FC = () => {
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
             <Bot size={14} /> AI Search Copilot (RAG)
+          </button>
+          <button
+            className={`btn ${searchMode === 'analytics' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('analytics')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <LineChart size={14} /> Search Analytics & A/B Testing
           </button>
           <button
             className={`btn ${searchMode === 'ops' ? 'btn-primary' : 'btn-secondary'}`}
@@ -144,65 +136,46 @@ export const SearchPage: React.FC = () => {
           >
             <BarChart3 size={14} /> Ranking Inspector
           </button>
-          <button
-            className={`btn ${searchMode === 'cluster' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSearchMode('cluster')}
-            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
-          >
-            <Server size={14} /> Cluster Dashboard
-          </button>
         </div>
       </div>
 
-      {searchMode === 'ops' && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #10b981' }}>
+      {searchMode === 'analytics' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #f59e0b' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 600 }}>
-              <ShieldCheck size={20} /> Enterprise Operations, Security & Audit Log Viewer
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#fbbf24', fontWeight: 600 }}>
+              <LineChart size={20} /> Search Quality Analytics & Online A/B Ranking Experiment Engine
             </div>
-            <span className="badge badge-info">System Liveness: {mockOps.health.status}</span>
+            <span className="badge badge-info">Active Experiment: {mockAnalytics.experiment.status}</span>
           </div>
 
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>JVM Memory</div>
-              <strong style={{ fontSize: '1.1rem', color: '#60a5fa' }}>{mockOps.metrics.jvmMem}</strong>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>NDCG@10 Relevance</div>
+              <strong style={{ fontSize: '1.1rem', color: '#fbbf24' }}>{mockAnalytics.quality.ndcg}</strong>
             </div>
             <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>P99 Search Latency</div>
-              <strong style={{ fontSize: '1.1rem', color: '#10b981' }}>{mockOps.metrics.p99Latency}</strong>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>MRR Score</div>
+              <strong style={{ fontSize: '1.1rem', color: '#10b981' }}>{mockAnalytics.quality.mrr}</strong>
             </div>
             <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Redis Hit Ratio</div>
-              <strong style={{ fontSize: '1.1rem', color: '#c084fc' }}>{mockOps.metrics.hitRatio}</strong>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Click-Through Rate (CTR)</div>
+              <strong style={{ fontSize: '1.1rem', color: '#60a5fa' }}>{mockAnalytics.quality.ctr}</strong>
             </div>
             <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Rate Limit Token Quota</div>
-              <strong style={{ fontSize: '1.1rem', color: '#f472b6' }}>{mockOps.metrics.remainingQuota}</strong>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Zero Result Rate</div>
+              <strong style={{ fontSize: '1.1rem', color: '#f472b6' }}>{mockAnalytics.quality.zeroResultRate}</strong>
             </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Enterprise Security Audit Trail:</span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {mockOps.auditLogs.map((log) => (
-                <div key={log.id} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '6px', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
-                  <span><strong style={{ color: '#818cf8' }}>[{log.time}]</strong> User: <strong>{log.user}</strong> ({log.role})</span>
-                  <span>Action: <strong style={{ color: '#10b981' }}>{log.action}</strong></span>
-                </div>
-              ))}
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Active Ranking Experiment:</span>
+            <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <strong style={{ color: '#f3f4f6' }}>{mockAnalytics.experiment.name}</strong>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Profile: <strong style={{ color: '#fbbf24' }}>{mockAnalytics.experiment.activeProfile}</strong></div>
+              </div>
+              <span className="badge badge-info">Traffic Split: {mockAnalytics.experiment.trafficSplit}</span>
             </div>
-          </div>
-        </div>
-      )}
-
-      {searchMode === 'query' && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #a855f7' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c084fc', fontWeight: 600 }}>
-              <Brain size={20} /> Query Intelligence Pipeline & Intent Inspector
-            </div>
-            <span className="badge badge-info">Intent: {mockQueryAnalysis.intent}</span>
           </div>
         </div>
       )}
@@ -221,7 +194,7 @@ export const SearchPage: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
           <span>Grounded Retrieval Results ({mockResults.length} indexed documents)</span>
-          <span>Enterprise Gateway Latency: 18ms (JWT Auth & Rate Limit Validated)</span>
+          <span>Analytics Engine Latency: 18ms (Search Event & Click Tracked)</span>
         </div>
 
         {mockResults.map((result) => (

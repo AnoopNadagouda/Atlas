@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 4.0: Enterprise Observability, Security & Production Readiness
+## Phase 4.1: Search Analytics, Relevance Evaluation & Ranking Experiments
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v4.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.0.0)
+[![Release](https://img.shields.io/badge/release-v4.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.1.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,33 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 4.1 Search Analytics, Relevance Evaluation & Ranking Experiments
+
+1. **Search Event & Click Analytics (`SearchAnalyticsService`)**:
+   - Logs search queries, latency, click positions, dwell times, and user session IDs.
+
+2. **Relevance Quality Evaluation (`RelevanceEvaluator`)**:
+   - Computes offline and online relevance ranking metrics: NDCG@10, Precision@10, Recall@10, MRR, MAP, and CTR.
+
+3. **Online A/B Experimentation Engine (`ExperimentManager`)**:
+   - Manages A/B ranking experiments across profiles (`BM25_HEAVY`, `SEMANTIC_HEAVY`, `PAGERANK_HEAVY`, `HYBRID_OPTIMIZED`) with sticky traffic splitting (5%, 10%, 25%, 50%).
+
+---
+
+### Phase 4.1 Search Quality REST APIs (v9)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v9/analytics/search` | Retrieve recent search query events, latencies & session metadata |
+| `GET` | `/api/v9/analytics/quality` | Relevance ranking quality metrics (NDCG@10, MRR, MAP, CTR, Zero Result Rate) |
+| `GET` | `/api/v9/analytics/latency` | Search latency percentiles (p50, p90, p99, max latency) |
+| `GET` | `/api/v9/analytics/top-queries` | Retrieve top searched terms and zero-result queries |
+| `GET` | `/api/v9/analytics/experiments` | List active online A/B ranking experiments & traffic splits |
+| `POST` | `/api/v9/analytics/experiments/start` | Start a new online A/B ranking experiment profile |
+| `POST` | `/api/v9/analytics/experiments/stop` | Stop an active A/B ranking experiment |
 
 ---
 
