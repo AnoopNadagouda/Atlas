@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.0.1: Learning-to-Rank Completion & Production Hardening
+## Phase 5.1: Multi-Tenant Enterprise Platform
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.0.1-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.0.1)
+[![Release](https://img.shields.io/badge/release-v5.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.1.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,35 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 5.1 Multi-Tenant Enterprise SaaS Platform
+
+1. **Tenant Context & Storage Isolation (`TenantContextHolder`)**:
+   - Automatic request tenant extraction via `X-Tenant-ID` header, JWT claims, and API keys with storage layout isolated at `./data/{tenantId}/`.
+
+2. **Tenant Quota & API Key Service (`TenantService` & `ApiKeyService`)**:
+   - Manages tenant lifecycle, document & storage quota limits, API key creation, rotation, and revocation.
+
+3. **Enterprise Multi-Tenant UI Dashboard (`SearchPage.tsx`)**:
+   - Glassmorphic tenant dashboard supporting active tenant switching, quota monitoring, and API key administration.
+
+---
+
+### Phase 5.1 Multi-Tenant REST APIs (v14)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v14/tenants` | Fetch all registered enterprise SaaS tenants |
+| `POST` | `/api/v14/tenants` | Provision a new enterprise tenant with storage and document quotas |
+| `GET` | `/api/v14/tenants/{id}` | Fetch tenant metadata, domain, and status |
+| `DELETE` | `/api/v14/tenants/{id}` | Mark enterprise tenant as DELETED |
+| `GET` | `/api/v14/tenants/{id}/statistics` | Retrieve tenant document count, storage bytes, and query metrics |
+| `GET` | `/api/v14/tenants/{id}/usage` | Retrieve resource utilization breakdown |
+| `GET` | `/api/v14/tenants/{id}/quotas` | Fetch tenant storage, query, document, and crawl quotas |
+| `POST` | `/api/v14/tenants/{id}/apikeys` | Generate a new scoped API Key for a tenant |
+| `DELETE` | `/api/v14/tenants/{id}/apikeys/{keyId}` | Revoke an existing API Key for a tenant |
 
 ---
 
