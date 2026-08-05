@@ -1,5 +1,4 @@
 package com.atlas.keywordsearch.graph;
-
 import com.atlas.domain.graph.EntityNode;
 import com.atlas.domain.graph.GraphStore;
 import com.atlas.domain.graph.RelationshipEdge;
@@ -27,6 +26,7 @@ public class InMemGraphStore implements GraphStore {
         String canonical = entity.getCanonicalName() != null ? entity.getCanonicalName().toLowerCase().trim() : entity.getName().toLowerCase().trim();
         aliasToIdMap.put(canonical, entity.getId());
         aliasToIdMap.put(entity.getName().toLowerCase().trim(), entity.getId());
+        
 
         if (entity.getAliases() != null) {
             for (String alias : entity.getAliases()) {

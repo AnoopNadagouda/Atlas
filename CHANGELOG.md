@@ -2,6 +2,20 @@
 
 All notable changes to the Atlas Search Engine project will be documented in this file.
 
+## [v5.5.2] - 2026-08-05
+### Phase 5.5 Milestone 2: Tool SDK & Execution Framework
+- Extensible, type-safe Agent Tool SDK with schema validation and micrometer observability metrics.
+- Automatic Spring Bean tool discovery and thread-safe registry (`ToolRegistry`).
+- Sandboxed virtual-thread tool execution engine (`ToolExecutor`) with permission checks and timeout management.
+- Production built-in tools (`BM25SearchTool`, `VectorSearchTool`, `WebCrawlTool`, `DocumentParseTool`).
+- Resilient non-blocking WebClient integration with retry and fallback capabilities.
+- Complete Tool SDK REST API (`/api/v1/tools`, `/api/v18/tools`) with OpenAPI Swagger annotations.
+
+## [v5.5.1] - 2026-08-05
+### Phase 5.5 Milestone 1: Agent Core Framework
+- Core state machine (`AgentState`), execution parameters (`AgentExecutionConfig`), context container (`AgentContext`), and result records (`AgentResult`).
+- New application microservice `atlas-agent-service` bootstrapped on Port 8086.
+
 ## [v5.0.0] - 2026-08-05
 ### Production Release & Final Verification
 - Production release of Atlas Distributed AI Search Platform.

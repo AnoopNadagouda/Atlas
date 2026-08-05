@@ -1,3 +1,4 @@
+
 package com.atlas.common.utils;
 
 import com.atlas.domain.exception.AtlasException;

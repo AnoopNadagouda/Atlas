@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.4: Enterprise Federation, Connectors & External Knowledge Integration
+## Phase 5.5: Autonomous Enterprise AI Agent Platform (Milestone 2: Tool SDK & Execution Framework)
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.4.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.4.0)
+[![Release](https://img.shields.io/badge/release-v5.5.2-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.5.2)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
