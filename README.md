@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 3.4: Query Intelligence, Autocomplete, Spell Correction & Search Quality Framework
+## Phase 4.0: Enterprise Observability, Security & Production Readiness
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v3.4.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v3.4.0)
+[![Release](https://img.shields.io/badge/release-v4.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.0.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,29 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 4.0 Enterprise Observability, Security & Production Readiness
+
+1. **Security & Authentication (`JwtTokenProvider` & `RedisRateLimiter`)**:
+   - Spring Security integration supporting JWT token authentication, role-based authorization (`ADMIN`, `OPERATOR`, `SEARCH_USER`), and Token Bucket rate limiting.
+
+2. **Enterprise Observability & Health (`HealthIndicatorService` & `AuditLogService`)**:
+   - Liveness and readiness probes, Micrometer metrics, OpenTelemetry distributed tracing, and asynchronous audit log tracking.
+
+---
+
+### Phase 4.0 Enterprise Admin REST APIs (v8)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v8/admin/health` | Comprehensive system liveness, readiness, and dependency health status |
+| `GET` | `/api/v8/admin/metrics` | Micrometer JVM memory, thread pool, latency, and cache hit metrics |
+| `GET` | `/api/v8/admin/config` | Active cluster configuration parameters, rate limits & feature flags |
+| `POST` | `/api/v8/admin/cache/clear` | Invalidate all Redis search cache entries across the cluster |
+| `POST` | `/api/v8/admin/reindex` | Trigger background cluster reindexing for index optimization |
+| `GET` | `/api/v8/admin/audit` | Retrieve security, administrative, and system audit logs |
 
 ---
 

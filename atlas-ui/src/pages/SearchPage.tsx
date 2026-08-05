@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
 
   const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact]. Distributed search coordinator fanned out query across 2 active cluster shards.";
+
+  const mockOps = {
+    health: { status: 'UP', postgresql: 'UP', kafka: 'UP', redis: 'UP' },
+    metrics: { jvmMem: '248 MB', p99Latency: '18.4 ms', hitRatio: '97.8%', remainingQuota: '998 / 1000' },
+    auditLogs: [
+      { id: 'aud-001', user: 'admin-user', role: 'ADMIN', action: 'CLUSTER_FAILOVER_PROMOTE', time: '10:14:02', status: 'SUCCESS' },
+      { id: 'aud-002', user: 'operator-user', role: 'OPERATOR', action: 'INDEX_SEGMENT_MERGE_START', time: '10:12:15', status: 'SUCCESS' }
+    ]
+  };
 
   const mockQueryAnalysis = {
     rawQuery: 'atls search engine kafka',
@@ -58,7 +67,7 @@ export const SearchPage: React.FC = () => {
       semanticScore: 0.945,
       rrfScore: 0.0328,
       pageRankScore: 0.384,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK'],
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK', 'ENTERPRISE'],
     },
     {
       id: 'doc-bm25-002',
@@ -76,8 +85,8 @@ export const SearchPage: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Query Intelligence</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Autocomplete, Did You Mean Spell Correction, Synonym Expansion, Query Rewriting, BM25, Semantic Vector, PageRank, and Grounded AI Copilot.</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Enterprise Operations Foundation</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test Query Intelligence, Autocomplete, Grounded AI Copilot, Micrometer Observability, JWT Security, and Enterprise Operations Dashboard.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -115,6 +124,13 @@ export const SearchPage: React.FC = () => {
             <Bot size={14} /> AI Search Copilot (RAG)
           </button>
           <button
+            className={`btn ${searchMode === 'ops' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('ops')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <ShieldCheck size={14} /> Operations & Security
+          </button>
+          <button
             className={`btn ${searchMode === 'query' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setSearchMode('query')}
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
@@ -135,15 +151,50 @@ export const SearchPage: React.FC = () => {
           >
             <Server size={14} /> Cluster Dashboard
           </button>
-          <button
-            className={`btn ${searchMode === 'graph' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSearchMode('graph')}
-            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
-          >
-            <Network size={14} /> Knowledge Graph
-          </button>
         </div>
       </div>
+
+      {searchMode === 'ops' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #10b981' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 600 }}>
+              <ShieldCheck size={20} /> Enterprise Operations, Security & Audit Log Viewer
+            </div>
+            <span className="badge badge-info">System Liveness: {mockOps.health.status}</span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>JVM Memory</div>
+              <strong style={{ fontSize: '1.1rem', color: '#60a5fa' }}>{mockOps.metrics.jvmMem}</strong>
+            </div>
+            <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>P99 Search Latency</div>
+              <strong style={{ fontSize: '1.1rem', color: '#10b981' }}>{mockOps.metrics.p99Latency}</strong>
+            </div>
+            <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Redis Hit Ratio</div>
+              <strong style={{ fontSize: '1.1rem', color: '#c084fc' }}>{mockOps.metrics.hitRatio}</strong>
+            </div>
+            <div style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Rate Limit Token Quota</div>
+              <strong style={{ fontSize: '1.1rem', color: '#f472b6' }}>{mockOps.metrics.remainingQuota}</strong>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Enterprise Security Audit Trail:</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {mockOps.auditLogs.map((log) => (
+                <div key={log.id} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '6px', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                  <span><strong style={{ color: '#818cf8' }}>[{log.time}]</strong> User: <strong>{log.user}</strong> ({log.role})</span>
+                  <span>Action: <strong style={{ color: '#10b981' }}>{log.action}</strong></span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {searchMode === 'query' && (
         <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #a855f7' }}>
@@ -152,76 +203,6 @@ export const SearchPage: React.FC = () => {
               <Brain size={20} /> Query Intelligence Pipeline & Intent Inspector
             </div>
             <span className="badge badge-info">Intent: {mockQueryAnalysis.intent}</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Raw User Query</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f3f4f6' }}>"{mockQueryAnalysis.rawQuery}"</div>
-            </div>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Spell Corrected</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#60a5fa' }}>"{mockQueryAnalysis.correctedQuery}"</div>
-            </div>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Synonym Rewritten</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#c084fc' }}>"{mockQueryAnalysis.rewrittenQuery}"</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {searchMode === 'ranking' && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #ec4899' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#f472b6', fontWeight: 600 }}>
-              <BarChart3 size={20} /> Multi-Signal Ranking Pipeline & PageRank Inspector
-            </div>
-            <span className="badge badge-info">Final Composition Score: {mockRanking.finalScore}</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target Document ID</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f3f4f6' }}>{mockRanking.docId}</div>
-            </div>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Signal Weight Mix</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f472b6' }}>RRF {mockRanking.weights.rrf} | PageRank {mockRanking.weights.pageRank} | Freshness {mockRanking.weights.freshness}</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {searchMode === 'cluster' && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #3b82f6' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#60a5fa', fontWeight: 600 }}>
-              <Server size={20} /> Distributed Search Cluster Manager & Shard Routing
-            </div>
-            <span className="badge badge-info">Cluster Status: {mockCluster.status}</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Cluster Name</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#f3f4f6' }}>{mockCluster.clusterName}</div>
-            </div>
-            <div>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Active Coordinator Node</span>
-              <div style={{ fontWeight: 600, fontSize: '1rem', color: '#60a5fa' }}>{mockCluster.nodeId}</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {(searchMode === 'copilot' || searchMode === 'graph') && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #10b981' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 600 }}>
-              <Network size={20} /> Knowledge Graph Entity Card & Traversal
-            </div>
-            <span className="badge badge-info">Canonical Confidence: {mockEntityCard.confidence}</span>
           </div>
         </div>
       )}
@@ -240,7 +221,7 @@ export const SearchPage: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
           <span>Grounded Retrieval Results ({mockResults.length} indexed documents)</span>
-          <span>Query Intelligence Pipeline Latency: 4ms (Analysis: Normalized, Corrected, Rewritten)</span>
+          <span>Enterprise Gateway Latency: 18ms (JWT Auth & Rate Limit Validated)</span>
         </div>
 
         {mockResults.map((result) => (
@@ -257,13 +238,6 @@ export const SearchPage: React.FC = () => {
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)' }}>{result.url}</div>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>{result.snippet}</p>
-
-            <div style={{ display: 'flex', gap: '16px', fontSize: '0.75rem', color: 'var(--text-dim)', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
-              <span>BM25 Score: <strong>{result.bm25Score}</strong></span>
-              <span>Semantic Score: <strong>{result.semanticScore}</strong></span>
-              <span>PageRank Score: <strong>{result.pageRankScore}</strong></span>
-              <span>RRF Fusion Score: <strong>{result.rrfScore}</strong></span>
-            </div>
           </div>
         ))}
       </div>
