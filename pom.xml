@@ -49,6 +49,7 @@
         <module>atlas-microservices/atlas-parser-service</module>
         <module>atlas-microservices/atlas-index-builder-worker</module>
         <module>atlas-microservices/atlas-agent-service</module>
+        <module>atlas-microservices/atlas-workflow-service</module>
     </modules>
 
     <dependencyManagement>

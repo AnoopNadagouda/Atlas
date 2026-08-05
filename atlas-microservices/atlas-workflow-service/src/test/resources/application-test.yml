@@ -1,0 +1,23 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: atlas-workflow-service-test
+  datasource:
+    url: jdbc:h2:mem:workflow_testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+atlas:
+  agent-service:
+    url: http://localhost:8086
+  kafka:
+    topics:
+      workflow-events: workflow.events.execution

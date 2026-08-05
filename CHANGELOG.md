@@ -2,7 +2,14 @@
 
 All notable changes to the Atlas Search Engine project will be documented in this file.
 
-## [v5.5.2] - 2026-08-05
+## [v5.6.0] - 2026-08-05
+### Phase 5.6: Enterprise AI Workflow Automation Platform
+- Created new microservice `atlas-workflow-service` running on Port `8087`.
+- Production DAG Workflow Engine supporting Sequential, Parallel, Conditional branches, Looping, Retries, Timeouts, Pause/Resume, Cancel/Restart, Checkpoint Recovery, and Rollback.
+- Human Approval step gate manager (`HumanApprovalManager`).
+- REST APIs (`/api/v20/workflows`) with Swagger OpenAPI annotations.
+- Kafka Event Publisher for workflow lifecycle events (`workflow.events.execution`).
+- Glassmorphic React UI components (`WorkflowDesigner`, `WorkflowDashboard`, `WorkflowTimeline`, `WorkflowExecutionView`, `WorkflowGraph`, `ApprovalCenter`, `WorkflowTemplates`, `WorkflowAnalytics`).
 ### Phase 5.5 Milestone 2: Tool SDK & Execution Framework
 - Extensible, type-safe Agent Tool SDK with schema validation and micrometer observability metrics.
 - Automatic Spring Bean tool discovery and thread-safe registry (`ToolRegistry`).
