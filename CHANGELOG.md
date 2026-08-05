@@ -2,7 +2,17 @@
 
 All notable changes to the Atlas Search Engine project will be documented in this file.
 
-## [v5.6.0] - 2026-08-05
+## [v5.7.0] - 2026-08-05
+### Phase 5.7: Enterprise AI Memory, Long-Term Context & Knowledge Learning Platform
+- Created new microservice `atlas-memory-service` running on Port `8088`.
+- Production multi-type Memory Engine supporting Short-Term, Long-Term, Semantic, Episodic, Procedural, Conversation, Workflow, Tool Execution, Search, and Knowledge Memory.
+- Ebbinghaus Forgetting Curve Memory Decay Manager (`MemoryDecayManager`).
+- Automatic Memory Consolidation Service (`MemoryConsolidationService`).
+- Knowledge Graph Memory Relationship Builder (`MemoryGraphBuilder`).
+- Vector Embedding Service (`MemoryEmbeddingService`) & Importance Scorer (`MemoryImportanceScorer`).
+- REST APIs (`/api/v21/memory`) with Swagger OpenAPI annotations.
+- Kafka Event Publisher for memory lifecycle events (`memory.events.lifecycle`).
+- Glassmorphic React UI components (`MemoryDashboard`, `MemoryExplorer`, `ConversationHistory`, `MemoryGraph`, `MemoryAnalytics`, `MemoryTimeline`, `MemorySearchPanel`, `MemorySettings`).
 ### Phase 5.6: Enterprise AI Workflow Automation Platform
 - Created new microservice `atlas-workflow-service` running on Port `8087`.
 - Production DAG Workflow Engine supporting Sequential, Parallel, Conditional branches, Looping, Retries, Timeouts, Pause/Resume, Cancel/Restart, Checkpoint Recovery, and Rollback.
