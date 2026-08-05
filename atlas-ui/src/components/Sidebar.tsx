@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, Bot, Activity, Settings, Layers } from 'lucide-react';
+import { Home, Search, Bot, Activity, Layers, FileText } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const links = [
     { to: '/', label: 'Overview', icon: Home },
     { to: '/search', label: 'Search Studio', icon: Search },
+    { to: '/documents', label: 'Document Explorer', icon: FileText },
     { to: '/crawler', label: 'Crawl Scheduler', icon: Layers },
     { to: '/status', label: 'Cluster Status', icon: Activity },
   ];

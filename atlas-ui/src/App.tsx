@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { Home } from './pages/Home';
 import { SearchPage } from './pages/SearchPage';
+import { DocumentExplorer } from './pages/DocumentExplorer';
 import { CrawlerPage } from './pages/CrawlerPage';
 import { StatusPage } from './pages/StatusPage';
 
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/documents" element={<DocumentExplorer />} />
             <Route path="/crawler" element={<CrawlerPage />} />
             <Route path="/status" element={<StatusPage />} />
           </Routes>

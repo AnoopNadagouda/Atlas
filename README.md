@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.2: Plugin SDK, Extension Framework & Marketplace Foundation
+## Phase 5.3: Multi-Modal Search & Document Intelligence
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.2.0)
+[![Release](https://img.shields.io/badge/release-v5.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.3.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,100 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 5.3 Multi-Modal Search & Document Intelligence (v5.3.0)
+
+1. **Universal Document Model (`UniversalDocument`)**:
+   - Production multi-modal domain model supporting PDF, DOCX, PPTX, XLSX, CSV, Markdown, HTML, Plain Text, JSON, XML, EPUB, RTF, Images (PNG/JPEG/TIFF), Audio (MP3/WAV/AAC), and Video (MP4/MKV/MOV).
+   - Enriches documents with `DocumentSection`, `Attachment`, `ContentFragment`, and `MetadataRegistry`.
+
+2. **Multi-Format Document Parser SPI (`DocumentParser`)**:
+   - Plug-and-play parser engine architecture (`PdfParser`, `DocxParser`, `PptxParser`, `XlsxParser`, `CsvParser`, `MarkdownParser`, `HtmlDocumentParser`, `PlainTextParser`, `JsonDocumentParser`, `XmlDocumentParser`, `EpubParser`, `RtfParser`).
+   - Managed via `DocumentParserRegistry` for automatic MIME/extension detection and streaming ingestion.
+
+3. **OCR Pipeline & Optical Character Recognition (`OcrService`)**:
+   - `ImageTextExtractor`: Image text extraction (PNG, JPEG, TIFF) with confidence scores, language detection, text normalization, and bounding boxes.
+   - `PdfImageExtractor`: Page-by-page embedded image extraction and OCR for scanned PDFs.
+   - `OcrTaskQueue`: Asynchronous background task queue for high-throughput OCR workloads.
+
+4. **Image & Media Metadata Inspector (`MetadataRegistry`)**:
+   - Image EXIF, IPTC, XMP metadata, camera make/model, lens info, GPS geo-location, dominant color palette, and MD5/SHA256 file hashes.
+   - Audio/Video specs: duration, codecs, bitrates, resolutions, frame rates, audio tracks, and embedded subtitles.
+
+5. **Thumbnail & Content Preview Engine (`ThumbnailService` & `ContentPreviewEngine`)**:
+   - Multi-format preview thumbnail generator with LRU & disk caching.
+   - Highlighted search snippet generator with `<mark>` tags, document outline TOC, slide previews, and spreadsheet grid structures.
+
+6. **Search Engine Integrations**:
+   - Seamless integration of all document types across **BM25**, **Semantic Search**, **Hybrid Search**, **RAG**, **Knowledge Graph**, **Time Travel**, and **Code Search**.
+
+---
+
+#### 📊 Multi-Modal Supported Formats Matrix
+
+| Category | File Format | Extension | Mime Type | Parser Class | OCR Support | Preview / Thumbnail |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Document** | Portable Document Format | `.pdf` | `application/pdf` | `PdfParser` | ✅ (Scanned PDF) | ✅ PDF Thumbnail |
+| **Word** | Microsoft Word | `.docx` | `application/vnd.openxmlformats-officedocument.wordprocessingml.document` | `DocxParser` | ➖ | ✅ Word Preview |
+| **Presentation** | Microsoft PowerPoint | `.pptx` | `application/vnd.openxmlformats-officedocument.presentationml.presentation` | `PptxParser` | ➖ | ✅ Slide Grid |
+| **Spreadsheet** | Microsoft Excel | `.xlsx` | `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` | `XlsxParser` | ➖ | ✅ Table Grid |
+| **Data** | Comma-Separated Values | `.csv` | `text/csv` | `CsvParser` | ➖ | ✅ Table Grid |
+| **Text** | Markdown | `.md` | `text/markdown` | `MarkdownParser` | ➖ | ✅ Syntax Highlight |
+| **Text** | HTML Web Document | `.html` | `text/html` | `HtmlDocumentParser` | ➖ | ✅ DOM Structure |
+| **Text** | Plain Text | `.txt` | `text/plain` | `PlainTextParser` | ➖ | ✅ Text Snippet |
+| **Data** | JSON Document | `.json` | `application/json` | `JsonDocumentParser` | ➖ | ✅ Code Preview |
+| **Data** | XML Document | `.xml` | `application/xml` | `XmlDocumentParser` | ➖ | ✅ Code Preview |
+| **E-Book** | EPUB E-Book | `.epub` | `application/epub+zip` | `EpubParser` | ➖ | ✅ Chapter TOC |
+| **Document** | Rich Text Format | `.rtf` | `application/rtf` | `RtfParser` | ➖ | ✅ Text Snippet |
+| **Image** | Image Files | `.png`, `.jpg`, `.tiff` | `image/png`, `image/jpeg`, `image/tiff` | `ImageTextExtractor` | ✅ High Confidence | ✅ Image Preview |
+| **Media** | Audio / Video | `.mp4`, `.mkv`, `.mp3`, `.wav` | `video/mp4`, `audio/mp3` | `MediaMetadataExtractor` | ➖ Subtitles | ✅ Media Frame |
+
+---
+
+#### 🛠️ Parser SDK & OCR Developer Guide
+
+To register a custom document parser into the Atlas platform:
+
+```java
+@Component
+public class CustomParser extends AbstractDocumentParser {
+
+    public CustomParser() {
+        super("CustomParser");
+    }
+
+    @Override
+    protected ExtractionResult doExtract(InputStream stream, ParserMetadata metadata) throws Exception {
+        // Extract text and sections
+        return ExtractionResult.builder()
+                .documentTitle(metadata.getFilename())
+                .extractedText("Parsed Content")
+                .status("SUCCESS")
+                .build();
+    }
+
+    @Override
+    public boolean supports(String fileType, String mimeType) {
+        return "CUSTOM".equalsIgnoreCase(fileType);
+    }
+}
+```
+
+---
+
+### Phase 5.3 Multi-Modal Document REST APIs (v16)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v16/documents/upload` | Ingest multi-modal document (PDF, Office, Video, Image) into platform |
+| `GET` | `/api/v16/documents/{id}` | Fetch universal document details, OCR scores, and extracted text |
+| `GET` | `/api/v16/documents/{id}/preview` | Retrieve document preview, sections, and highlighted text |
+| `GET` | `/api/v16/documents/{id}/thumbnail` | Fetch cached document preview thumbnail image |
+| `GET` | `/api/v16/documents/{id}/metadata` | Fetch EXIF, camera, GPS, and media asset metadata |
+| `POST` | `/api/v16/documents/reindex` | Trigger reindexing across multi-modal document collections |
+| `GET` | `/api/v16/documents/statistics` | Document intelligence engine metrics and supported formats |
 
 ---
 

@@ -1,48 +1,38 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock, LineChart, History, Clock, Code, FileCode, Users, Key, Package, Download } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock, LineChart, History, Clock, Code, FileCode, Users, Key, Package, Download, FileText, Image, Video, FileSpreadsheet } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops' | 'analytics' | 'history' | 'code' | 'tenants' | 'plugins'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops' | 'analytics' | 'history' | 'code' | 'tenants' | 'plugins' | 'multimodal'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState('default-tenant');
 
   const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact]. Distributed search coordinator fanned out query across 2 active cluster shards.";
 
-  const mockPlugins = [
-    { id: 'plugin-markdown-parser', name: 'Markdown Document Parser', version: 'v1.2.0', category: 'PARSER', status: 'ENABLED', permissions: 'FILESYSTEM_READ, PARSER_REGISTER' },
-    { id: 'plugin-ddg-search', name: 'DuckDuckGo External Web Search', version: 'v2.0.1', category: 'SEARCH_PROVIDER', status: 'ENABLED', permissions: 'NETWORK_CONNECT, SEARCH_FEDERATION' }
-  ];
-
-  const mockMarketplace = [
-    { id: 'plugin-gemini-llm', name: 'Google Gemini 1.5 Pro Provider', version: 'v3.0.0', publisher: 'Google AI Team', downloads: '14.2k', rating: '4.9 ⭐' },
-    { id: 'plugin-pdf-parser', name: 'PDF & OCR Document Parser', version: 'v2.1.4', publisher: 'Atlas Community', downloads: '8.9k', rating: '4.8 ⭐' }
-  ];
-
-  const mockTenants = [
-    { id: 'default-tenant', name: 'Default Organization', domain: 'atlas.search', status: 'ACTIVE', docs: '150,000 / 1,000,000', storage: '1.28 GB / 100 GB', keys: 2 },
-    { id: 'tenant-acme', name: 'Acme Corporation', domain: 'acme.org', status: 'ACTIVE', docs: '45,000 / 500,000', storage: '0.45 GB / 50 GB', keys: 1 }
+  const mockMultiModalDocs = [
+    { id: 'doc-pdf-001', title: 'Atlas Architecture Blueprint.pdf', type: 'PDF', size: '2.45 MB', ocrConfidence: '98.5%', sections: 3, preview: 'Atlas Distributed AI Search Engine Architecture and Parallel Hybrid BM25 HNSW RRF Pipeline.' },
+    { id: 'doc-video-001', title: 'Atlas System Demo.mp4', type: 'VIDEO', size: '45.8 MB', ocrConfidence: '94.0%', duration: '03:04', preview: 'Transcript: Distributed search coordinator fanning out queries across cluster shards.' }
   ];
 
   const mockResults = [
     {
       id: 'doc-foundation-001',
-      title: 'Atlas Platform - Enterprise Multi-Tenant AI Search Engine',
+      title: 'Atlas Platform - Enterprise Multi-Modal AI Search Engine',
       url: 'https://atlas.search/docs/hybrid-rrf',
-      snippet: 'Phase 5.2 Plugin SDK, Extension Framework & Marketplace Foundation for modular platform extension.',
+      snippet: 'Phase 5.3 Multi-Modal Search & Document Intelligence with PDF, Office, Video, OCR, and Universal Document Previews.',
       bm25Score: 0.892,
       semanticScore: 0.945,
       rrfScore: 0.0328,
       pageRankScore: 0.384,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'PLUGIN_EXTENDED', 'MARKETPLACE'],
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'MULTI_MODAL', 'OCR_EXTRACTED'],
     },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Plugin Marketplace Platform</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Plugin SDK, Extension Framework, Marketplace Discovery, Multi-Tenant Isolation, Code Search, and Operations Dashboard.</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Multi-Modal Document Intelligence</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test Multi-Modal Ingestion, PDF/Office Parsing, OCR Extraction, Video/EXIF Metadata, Plugin SDK, Multi-Tenant SaaS, and Code Search.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -51,7 +41,7 @@ export const SearchPage: React.FC = () => {
             <input
               type="text"
               className="input-field"
-              placeholder="Search plugin-extended index..."
+              placeholder="Search multi-modal documents, PDFs, transcripts, video metadata..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               style={{ paddingLeft: '44px' }}
@@ -59,7 +49,7 @@ export const SearchPage: React.FC = () => {
             <Search size={20} style={{ position: 'absolute', left: '14px', top: '12px', color: 'var(--text-dim)' }} />
           </div>
           <button className="btn btn-primary" onClick={() => setIsStreaming(true)}>
-            <Zap size={18} /> Search
+            <Zap size={18} /> Multi-Modal Search
           </button>
         </div>
 
@@ -73,11 +63,18 @@ export const SearchPage: React.FC = () => {
             <Bot size={14} /> AI Search Copilot (RAG)
           </button>
           <button
+            className={`btn ${searchMode === 'multimodal' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('multimodal')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <FileText size={14} /> Multi-Modal Document Explorer
+          </button>
+          <button
             className={`btn ${searchMode === 'plugins' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setSearchMode('plugins')}
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
-            <Package size={14} /> Plugin SDK & Marketplace
+            <Package size={14} /> Plugin Marketplace
           </button>
           <button
             className={`btn ${searchMode === 'tenants' ? 'btn-primary' : 'btn-secondary'}`}
@@ -86,49 +83,34 @@ export const SearchPage: React.FC = () => {
           >
             <Users size={14} /> Multi-Tenant SaaS
           </button>
-          <button
-            className={`btn ${searchMode === 'code' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSearchMode('code')}
-            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
-          >
-            <Code size={14} /> GitHub Code Search
-          </button>
         </div>
       </div>
 
-      {searchMode === 'plugins' && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '4px solid #10b981' }}>
+      {searchMode === 'multimodal' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', borderLeft: '4px solid #38bdf8' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 600 }}>
-              <Package size={20} /> Plugin SDK, Extension Framework & Marketplace Catalog
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 600 }}>
+              <FileText size={20} /> Multi-Modal Document Intelligence Explorer & OCR Pipeline
             </div>
-            <span className="badge badge-info">Installed Plugins: {mockPlugins.length}</span>
+            <span className="badge badge-info">Indexed Content Types: PDF, DOCX, PPTX, XLSX, MP4, JPEG</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Installed Extension Plugins:</span>
-            {mockPlugins.map((plugin) => (
-              <div key={plugin.id} style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <strong style={{ color: '#60a5fa' }}>{plugin.name}</strong> <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>({plugin.version})</span>
-                  <div style={{ fontSize: '0.8rem', color: '#10b981' }}>Permissions: {plugin.permissions}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Universal Documents & Previews:</span>
+            {mockMultiModalDocs.map((doc) => (
+              <div key={doc.id} style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {doc.type === 'PDF' ? <FileText size={18} style={{ color: '#ef4444' }} /> : <Video size={18} style={{ color: '#818cf8' }} />}
+                    <strong style={{ color: '#60a5fa' }}>{doc.title}</strong>
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <span className="badge badge-info">Format: {doc.type}</span>
+                    <span className="badge badge-info">OCR Confidence: {doc.ocrConfidence}</span>
+                  </div>
                 </div>
-                <span className="badge badge-info">{plugin.status}</span>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Plugin Marketplace Recommendations:</span>
-            {mockMarketplace.map((item) => (
-              <div key={item.id} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <strong style={{ color: '#818cf8' }}>{item.name}</strong> <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>by {item.publisher}</span>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Downloads: {item.downloads} | Rating: {item.rating}</div>
-                </div>
-                <button className="btn btn-primary" style={{ padding: '4px 12px', fontSize: '0.75rem' }}>
-                  <Download size={12} /> Install Plugin
-                </button>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{doc.preview}</p>
+                <div style={{ fontSize: '0.75rem', color: '#38bdf8' }}>File Size: {doc.size} {doc.duration ? `| Duration: ${doc.duration}` : ''}</div>
               </div>
             ))}
           </div>
@@ -139,7 +121,7 @@ export const SearchPage: React.FC = () => {
         <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #6366f1' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#818cf8', fontWeight: 600 }}>
-              <Bot size={20} /> AI Search Copilot Answer (Grounded with Extension Plugins)
+              <Bot size={20} /> AI Search Copilot Answer (Grounded with Multi-Modal Documents & OCR)
             </div>
           </div>
           <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#f3f4f6' }}>{mockCopilotAnswer}</p>
@@ -148,7 +130,7 @@ export const SearchPage: React.FC = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-          <span>Plugin-Extended Search Results ({mockResults.length} indexed documents)</span>
+          <span>Multi-Modal Search Results ({mockResults.length} indexed documents)</span>
           <span>Tenant Context: {selectedTenant}</span>
         </div>
 
