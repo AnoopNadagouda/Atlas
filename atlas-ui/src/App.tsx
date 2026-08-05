@@ -5,6 +5,8 @@ import { Sidebar } from './components/Sidebar';
 import { Home } from './pages/Home';
 import { SearchPage } from './pages/SearchPage';
 import { DocumentExplorer } from './pages/DocumentExplorer';
+import { ConnectorDashboard } from './pages/ConnectorDashboard';
+import { FederatedSearchExplorer } from './pages/FederatedSearchExplorer';
 import { CrawlerPage } from './pages/CrawlerPage';
 import { StatusPage } from './pages/StatusPage';
 
@@ -18,6 +20,8 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/federated-search" element={<FederatedSearchExplorer />} />
+            <Route path="/connectors" element={<ConnectorDashboard />} />
             <Route path="/documents" element={<DocumentExplorer />} />
             <Route path="/crawler" element={<CrawlerPage />} />
             <Route path="/status" element={<StatusPage />} />

@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.3: Multi-Modal Search & Document Intelligence
+## Phase 5.4: Enterprise Federation, Connectors & External Knowledge Integration
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.3.0)
+[![Release](https://img.shields.io/badge/release-v5.4.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.4.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,64 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 5.4 Enterprise Federation, Connectors & External Knowledge Integration (v5.4.0)
+
+1. **Pluggable Connector SDK (`Connector`)**:
+   - Universal SPI architecture for enterprise connectors (`Connector`, `ConnectorManager`, `ConnectorRegistry`, `ConnectorScheduler`, `ConnectorConfiguration`, `ConnectorHealth`, `ConnectorAuthentication`, `ConnectorMetadata`, `ConnectorStatistics`, `ConnectorSyncJob`).
+   - Lifecycle state machine: `REGISTERED` → `CONNECTING` → `CONNECTED` → `SYNCING` → `FAILED` / `DISABLED`.
+
+2. **16 Enterprise Connector Adapters**:
+   - `GitHubConnector` (Repos, Issues, PRs, Code, Wikis)
+   - `GitLabConnector` (Projects, MRs, Snippets)
+   - `ConfluenceConnector` (Spaces, Pages, Comments)
+   - `JiraConnector` (Issues, Projects, Components)
+   - `NotionConnector` (Pages, Databases, Blocks)
+   - `GoogleDriveConnector` (Docs, Sheets, Slides, Files)
+   - `OneDriveConnector` (Files & Folders)
+   - `SharePointConnector` (Document Libraries, Sites, Lists)
+   - `DropboxConnector` (Files & Folders)
+   - `SlackConnector` (Channels, Messages, Threads)
+   - `TeamsConnector` (Teams, Channels, Chat Messages)
+   - `LocalFileSystemConnector` (Local Directory Indexer)
+   - `AmazonS3Connector` (S3 Buckets & Objects)
+   - `AzureBlobStorageConnector` (Azure Blob Containers)
+   - `GenericRestConnector` (Generic REST Endpoints)
+   - `RssAtomConnector` (RSS/Atom News Feeds)
+
+3. **Enterprise Security & Credentials (`CredentialEncryptor`)**:
+   - AES-256 GCM credential encryption at rest and automated secret rotation support for OAuth2, Bearer Tokens, API Keys, Basic Auth, and PAT Tokens.
+
+4. **Synchronized Ingestion Engine (`SyncEngineService`)**:
+   - Streams connector items directly into `UniversalDocument` -> Parser -> OCR -> Metadata -> Hybrid Index pipeline.
+   - Supports Full, Incremental, Checkpointed Delta, and Webhook-triggered synchronization with Dead-Letter Queue (DLQ) retry backoff.
+
+5. **Unified Federated Search Engine (`FederatedSearchService`)**:
+   - Parallel query dispatch across internal index + 16 enterprise connectors using Java 21 Virtual Threads.
+   - Result aggregation, SimHash duplicate removal, RRF unified ranking, per-source latency tracking, and partial failure tolerance.
+
+6. **Access Control & Permission Filtering (`AclFilterService`)**:
+   - User identity propagation, tenant isolation, role mapping, and source ACL permission verification on every search result item.
+
+---
+
+#### 🔌 Enterprise Connectors Matrix & REST APIs (v17)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v17/connectors` | Fetch list of all registered enterprise connector adapters |
+| `POST` | `/api/v17/connectors` | Register and configure a new connector instance |
+| `DELETE` | `/api/v17/connectors/{id}` | Remove a registered connector instance |
+| `POST` | `/api/v17/connectors/{id}/sync` | Trigger full or incremental synchronization job |
+| `POST` | `/api/v17/connectors/{id}/pause` | Pause connector sync schedule |
+| `POST` | `/api/v17/connectors/{id}/resume` | Resume connector sync schedule |
+| `GET` | `/api/v17/connectors/{id}/health` | Fetch connector health, connectivity, and latency indicator |
+| `GET` | `/api/v17/connectors/{id}/statistics` | Fetch sync duration, throughput, and error counters |
+| `GET` | `/api/v17/connectors/jobs` | Fetch sync job execution history |
+| `GET` | `/api/v17/connectors/jobs/{id}` | Fetch detailed sync job status |
+| `POST` | `/api/v17/search/federated` | Execute federated search across internal index & enterprise sources |
 
 ---
 
