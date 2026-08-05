@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 4.2: Time Travel Search (Historical Indexing & Versioned Retrieval)
+## Phase 4.3: GitHub Code Search & Source Intelligence
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v4.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.2.0)
+[![Release](https://img.shields.io/badge/release-v4.3.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.3.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,35 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 4.3 GitHub Code Search & Source Intelligence
+
+1. **Programming Language Detector (`LanguageDetector`)**:
+   - Automatically detects Java, Python, JavaScript, and TypeScript source files.
+
+2. **AST Symbol Extractor (`AstSymbolExtractor`)**:
+   - Language-aware AST symbol parser extracting packages, classes, methods, functions, interfaces, and import dependencies.
+
+3. **Code Index Builder & Symbol Registry (`CodeIndexBuilder`)**:
+   - Dedicated repository and code symbol indexes supporting symbol, definition, file, and regex searches.
+
+4. **Grounded AI Code Copilot (`AiCodeCopilotService`)**:
+   - Grounded AI code explanations, symbol summaries, and architecture Q&A based on indexed repositories.
+
+---
+
+### Phase 4.3 Code Search REST APIs (v11)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v11/code/index` | Trigger automated indexing and AST symbol extraction for a Git repository |
+| `GET` | `/api/v11/code/search` | Search AST code symbols across indexed repositories |
+| `GET` | `/api/v11/code/symbol/{name}` | Retrieve grounded AI Code Copilot explanation for a specific symbol |
+| `GET` | `/api/v11/code/repository/{id}` | Fetch repository metadata, file counts, and language breakdown |
+| `GET` | `/api/v11/code/dependencies` | Retrieve cross-repository dependency graph and library imports |
+| `GET` | `/api/v11/code/statistics` | Code search platform metrics (repos, files, symbols, supported languages) |
 
 ---
 

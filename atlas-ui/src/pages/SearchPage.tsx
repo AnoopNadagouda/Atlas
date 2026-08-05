@@ -1,35 +1,22 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock, LineChart, History, Clock } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, Zap, Brain, Layers, Bot, Copy, Square, Network, Cpu, Database, Server, Activity, BarChart3, HelpCircle, CheckCircle2, ShieldCheck, Lock, LineChart, History, Clock, Code, FileCode } from 'lucide-react';
 
 export const SearchPage: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops' | 'analytics' | 'history'>('copilot');
+  const [searchMode, setSearchMode] = useState<'keyword' | 'semantic' | 'hybrid' | 'copilot' | 'graph' | 'cluster' | 'ranking' | 'query' | 'ops' | 'analytics' | 'history' | 'code'>('copilot');
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedDate, setSelectedDate] = useState('2026-07-15');
 
   const mockCopilotAnswer = "Based on the retrieved indexed documents [1], Atlas executes parallel hybrid search combining BM25 term frequencies and 384-dimensional HNSW ANN vector similarity scores via Reciprocal Rank Fusion (RRF) [2]. Connected entities include Spring Boot, Apache Kafka, and PostgreSQL [Graph-Fact]. Distributed search coordinator fanned out query across 2 active cluster shards.";
 
-  const mockHistory = {
-    selectedSnapshot: 'snap-2026-07-15',
-    activeTimestamp: '2026-07-15T00:00:00Z',
-    versions: [
-      { id: 'v-1.0', date: '2026-07-01', title: 'Atlas Search - Single Node BM25 Engine', snippet: 'Phase 1.0 Custom Inverted Index.' },
-      { id: 'v-2.0', date: '2026-07-15', title: 'Atlas Search - Hybrid Search & Grounded Copilot', snippet: 'Phase 2.0 Parallel Hybrid Search.' },
-      { id: 'v-3.0', date: '2026-08-01', title: 'Atlas Platform - Enterprise AI Search Engine', snippet: 'Phase 4.2 Time Travel Search.' },
+  const mockCodeSearch = {
+    repositories: [
+      { name: 'AnoopNadagouda/Atlas', url: 'https://github.com/AnoopNadagouda/Atlas', files: 150, symbols: 450, langs: 'Java (75%), TypeScript (20%)' }
     ],
-    diff: {
-      docId: 'doc-foundation-001',
-      from: 'v-1.0',
-      to: 'v-2.0',
-      added: ['Parallel Hybrid Search combining BM25 and HNSW vectors', 'Grounded AI Copilot'],
-      removed: ['Single Node BM25 Engine'],
-      similarity: '82.0%'
-    }
-  };
-
-  const mockAnalytics = {
-    quality: { ndcg: 0.894, precision: 0.850, recall: 0.912, mrr: 0.925, ctr: '42.5%', zeroResultRate: '1.2%' },
-    experiment: { id: 'exp-001', name: 'PageRank Heavy Ranking Experiment', trafficSplit: '25%', activeProfile: 'PAGERANK_HEAVY', status: 'RUNNING' }
+    symbols: [
+      { name: 'HybridSearchService', type: 'CLASS', lang: 'JAVA', file: 'com/atlas/keywordsearch/hybrid/HybridSearchService.java', signature: 'public class HybridSearchService' },
+      { name: 'executeSearch', type: 'METHOD', lang: 'JAVA', file: 'com/atlas/keywordsearch/hybrid/HybridSearchService.java', signature: 'public SearchResult executeSearch(SearchRequest req)' },
+    ]
   };
 
   const mockResults = [
@@ -42,15 +29,15 @@ export const SearchPage: React.FC = () => {
       semanticScore: 0.945,
       rrfScore: 0.0328,
       pageRankScore: 0.384,
-      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK', 'TIME_TRAVEL'],
+      sources: ['KEYWORD', 'SEMANTIC', 'HYBRID', 'GRAPH', 'CLUSTER', 'PAGERANK', 'CODE_SEARCH'],
     },
   ];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Time Travel Platform</h2>
-        <p style={{ color: 'var(--text-muted)' }}>Test Time Travel Search, Historical Indexing, Snapshot Retrieval, Document Version Diffs, AI Search Copilot, and Analytics.</p>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: 700 }}>Search Studio & Source Intelligence Platform</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Test GitHub Code Search, AST Symbol Extraction, Repository Indexing, AI Code Copilot, Time Travel Search, and Operations Dashboard.</p>
       </div>
 
       <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -59,7 +46,7 @@ export const SearchPage: React.FC = () => {
             <input
               type="text"
               className="input-field"
-              placeholder="Type query or search historical index snapshot..."
+              placeholder="Type class or method symbol ('HybridSearchService', 'executeSearch')..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               style={{ paddingLeft: '44px' }}
@@ -67,7 +54,7 @@ export const SearchPage: React.FC = () => {
             <Search size={20} style={{ position: 'absolute', left: '14px', top: '12px', color: 'var(--text-dim)' }} />
           </div>
           <button className="btn btn-primary" onClick={() => setIsStreaming(true)}>
-            <Zap size={18} /> Time Travel Search
+            <Zap size={18} /> Code Search & Explain
           </button>
         </div>
 
@@ -81,67 +68,64 @@ export const SearchPage: React.FC = () => {
             <Bot size={14} /> AI Search Copilot (RAG)
           </button>
           <button
+            className={`btn ${searchMode === 'code' ? 'btn-primary' : 'btn-secondary'}`}
+            onClick={() => setSearchMode('code')}
+            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
+          >
+            <Code size={14} /> GitHub Code Search (AST & Symbols)
+          </button>
+          <button
             className={`btn ${searchMode === 'history' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setSearchMode('history')}
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
-            <History size={14} /> Time Travel Search (Historical Index)
+            <History size={14} /> Time Travel Search
           </button>
           <button
             className={`btn ${searchMode === 'analytics' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setSearchMode('analytics')}
             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
           >
-            <LineChart size={14} /> Search Analytics & A/B Testing
-          </button>
-          <button
-            className={`btn ${searchMode === 'ops' ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => setSearchMode('ops')}
-            style={{ padding: '6px 14px', fontSize: '0.8rem' }}
-          >
-            <ShieldCheck size={14} /> Operations & Security
+            <LineChart size={14} /> Search Analytics
           </button>
         </div>
       </div>
 
-      {searchMode === 'history' && (
-        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #3b82f6' }}>
+      {searchMode === 'code' && (
+        <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #10b981' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#60a5fa', fontWeight: 600 }}>
-              <Clock size={20} /> Time Travel Timeline & Document Version Difference Viewer
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 600 }}>
+              <Code size={20} /> GitHub Code Search & AST Symbol Registry
             </div>
-            <span className="badge badge-info">Active Snapshot: {mockHistory.selectedSnapshot}</span>
+            <span className="badge badge-info">Repositories: {mockCodeSearch.repositories.length}</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Historical Snapshot Timeline:</span>
-            <input
-              type="range"
-              min="1"
-              max="3"
-              step="1"
-              defaultValue="2"
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === '1') setSelectedDate('2026-07-01');
-                if (val === '2') setSelectedDate('2026-07-15');
-                if (val === '3') setSelectedDate('2026-08-01');
-              }}
-              style={{ width: '100%', cursor: 'pointer' }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              <span>2026-07-01 (v-1.0)</span>
-              <strong style={{ color: '#60a5fa' }}>Selected: {selectedDate}</strong>
-              <span>2026-08-01 (v-3.0)</span>
-            </div>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Indexed Repositories:</span>
+            {mockCodeSearch.repositories.map((repo) => (
+              <div key={repo.name} style={{ background: 'rgba(255, 255, 255, 0.04)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '8px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <strong style={{ color: '#60a5fa' }}>{repo.name}</strong>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{repo.langs}</div>
+                </div>
+                <span className="badge badge-info">{repo.symbols} Symbols ({repo.files} Files)</span>
+              </div>
+            ))}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Document Version Diff (v-1.0 ➔ v-2.0):</span>
-            <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.85rem' }}>
-              <div>Similarity Score: <strong style={{ color: '#10b981' }}>{mockHistory.diff.similarity}</strong></div>
-              <div style={{ color: '#10b981' }}>+ Added: {mockHistory.diff.added.join(', ')}</div>
-              <div style={{ color: '#ef4444' }}>- Removed: {mockHistory.diff.removed.join(', ')}</div>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>AST Symbol Search Results:</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {mockCodeSearch.symbols.map((sym) => (
+                <div key={sym.name} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '6px', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                  <div>
+                    <strong style={{ color: '#818cf8' }}>{sym.name}</strong> <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>({sym.type})</span>
+                    <div style={{ fontSize: '0.8rem', color: '#10b981' }}>{sym.signature}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>File: {sym.file}</div>
+                  </div>
+                  <span className="badge badge-info">{sym.lang}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -151,7 +135,7 @@ export const SearchPage: React.FC = () => {
         <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderLeft: '4px solid #6366f1' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#818cf8', fontWeight: 600 }}>
-              <Bot size={20} /> AI Search Copilot Answer (Grounded with Graph Facts)
+              <Bot size={20} /> AI Search Copilot Answer (Grounded with Graph & AST Facts)
             </div>
           </div>
           <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#f3f4f6' }}>{mockCopilotAnswer}</p>
@@ -160,8 +144,8 @@ export const SearchPage: React.FC = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between' }}>
-          <span>Grounded Historical Results ({mockResults.length} indexed versioned documents)</span>
-          <span>Time Travel Planner Latency: 16ms (Snapshot Selection Validated)</span>
+          <span>Grounded Source Results ({mockResults.length} indexed documents & symbols)</span>
+          <span>Code Search Latency: 12ms (AST Match Validated)</span>
         </div>
 
         {mockResults.map((result) => (
