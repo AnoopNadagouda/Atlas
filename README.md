@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.1: Multi-Tenant Enterprise Platform
+## Phase 5.2: Plugin SDK, Extension Framework & Marketplace Foundation
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.1.0)
+[![Release](https://img.shields.io/badge/release-v5.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.2.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,35 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 5.2 Plugin SDK, Extension Framework & Marketplace Foundation
+
+1. **Plugin Lifecycle & Extension Manager (`PluginManager`)**:
+   - Manages installation, uninstallation, enabling, disabling, reloading, and permission checking for extension plugins.
+
+2. **Plugin Event Bus (`PluginEventBus`)**:
+   - Asynchronous event bus notifying extension plugins of lifecycle events (`DocumentIndexed`, `SearchExecuted`, `CrawlerFinished`).
+
+3. **Plugin Marketplace Catalog (`PluginMarketplaceService`)**:
+   - Centralized marketplace discovery catalog and automated update checker.
+
+---
+
+### Phase 5.2 Plugin REST APIs (v15)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v15/plugins` | Fetch list of all installed extension plugins |
+| `GET` | `/api/v15/plugins/{id}` | Retrieve detailed plugin metadata, permissions, and capabilities |
+| `POST` | `/api/v15/plugins/install` | Install a new extension plugin dynamically into the runtime |
+| `POST` | `/api/v15/plugins/uninstall` | Uninstall an existing extension plugin |
+| `POST` | `/api/v15/plugins/enable` | Enable an installed plugin |
+| `POST` | `/api/v15/plugins/disable` | Disable an active plugin |
+| `POST` | `/api/v15/plugins/reload` | Reload all active runtime extension plugins |
+| `GET` | `/api/v15/plugins/marketplace` | Fetch Plugin Marketplace discovery catalog |
+| `GET` | `/api/v15/plugins/updates` | Check for available plugin updates |
 
 ---
 
