@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.0: Production Release, Performance Validation & Developer Experience
+## Phase 5.0.1: Learning-to-Rank Completion & Production Hardening
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.0.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.0.0)
+[![Release](https://img.shields.io/badge/release-v5.0.1-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.0.1)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,29 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 5.0.1 Learning-to-Rank Completion & Production Hardening
+
+1. **LTR Feature Extraction Pipeline (`LtrFeatureExtractor`)**:
+   - Extracts and normalizes multi-signal feature vectors (BM25, Semantic, PageRank, Freshness, CTR, Entity Match).
+
+2. **LTR Model Registry & Versioning (`LtrModelRegistry`)**:
+   - Model registry for Linear, XGBoost, LambdaMART, and ONNX models with active status management.
+
+3. **LTR Ranking Inference Engine (`LtrRankingService`)**:
+   - Computes machine-learned ranking predictions with automatic fallback to multi-signal ranking pipelines.
+
+---
+
+### Phase 5.0.1 Learning-to-Rank REST APIs (v13)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v13/ltr/features` | Extract normalized LTR feature vector for a query-document pair |
+| `GET` | `/api/v13/ltr/models` | List active and registered Learning-to-Rank models |
+| `POST` | `/api/v13/ltr/predict` | Compute LTR ranking prediction score using active model weights |
 
 ---
 
