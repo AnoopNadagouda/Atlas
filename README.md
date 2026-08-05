@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 4.1: Search Analytics, Relevance Evaluation & Ranking Experiments
+## Phase 4.2: Time Travel Search (Historical Indexing & Versioned Retrieval)
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v4.1.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.1.0)
+[![Release](https://img.shields.io/badge/release-v4.2.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v4.2.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -180,6 +180,34 @@ sequenceDiagram
 | `GET` | `/api/v1/search/statistics` | Search engine latency, query count & cache metrics |
 | `GET` | `/api/v1/search/cache` | Redis search cache stats (hits, misses, hit ratio) |
 | `DELETE` | `/api/v1/search/cache` | Clear and invalidate Redis search cache entries |
+
+---
+
+### Phase 4.2 Time Travel Search (Historical Indexing & Versioned Retrieval)
+
+1. **Versioned Document Store (`VersionedDocumentStore`)**:
+   - Maintains complete immutable version histories for crawled documents with parent links and content hashes.
+
+2. **Index Snapshot Manager (`SnapshotManager`)**:
+   - Creates, manages, and selects historical index segment snapshots based on user-requested target timestamps.
+
+3. **Document Difference Engine (`DifferenceEngine`)**:
+   - Computes text differences (added/removed content) and similarity scores between document versions.
+
+4. **Time Travel Query Planner (`TimeTravelQueryPlanner`)**:
+   - Coordinates time-based historical search execution across historical snapshots and versioned document stores.
+
+---
+
+### Phase 4.2 Time Travel REST APIs (v10)
+
+| HTTP Method | Endpoint Path | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/v10/history/document/{id}` | Retrieve complete historical version timeline for a specific document |
+| `GET` | `/api/v10/history/snapshots` | List active index snapshots and storage sizes |
+| `POST` | `/api/v10/history/search` | Execute Time Travel Search at a target historical timestamp |
+| `GET` | `/api/v10/history/diff` | Compute text difference and similarity score between two document versions |
+| `POST` | `/api/v10/history/snapshot/create` | Trigger manual historical index snapshot creation |
 
 ---
 
