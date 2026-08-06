@@ -78,8 +78,10 @@ services:
       INDEX_BUILDER_URI: http://atlas-index-builder-worker:8084
       MEMORY_SERVICE_URI: http://atlas-memory-service:8088
       REASONING_SERVICE_URI: http://atlas-reasoning-service:8089
+      ORCHESTRATOR_SERVICE_URI: http://atlas-orchestrator-service:8090
 
   # Microservices
+
   atlas-search-gateway:
     build:
       context: .
@@ -217,8 +219,30 @@ services:
       REDIS_HOST: redis
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
 
+  atlas-orchestrator-service:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-orchestrator-service/Dockerfile
+    container_name: atlas-orchestrator-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_db
+      SPRING_DATASOURCE_USERNAME: atlas
+      SPRING_DATASOURCE_PASSWORD: atlas_password
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
   # React Frontend
   atlas-ui:
+
     build:
       context: ./atlas-ui
       dockerfile: Dockerfile

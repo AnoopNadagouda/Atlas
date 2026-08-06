@@ -5,6 +5,7 @@ import { Home, Search, Bot, Activity, Layers, FileText, Network, Globe, Brain, C
 export const Sidebar: React.FC = () => {
   const links = [
     { to: '/', label: 'Overview', icon: Home },
+    { to: '/aios', label: 'Atlas AIOS Shell', icon: Cpu },
     { to: '/search', label: 'Search Studio', icon: Search },
     { to: '/federated-search', label: 'Federated Search', icon: Globe },
     { to: '/connectors', label: 'Connector Hub', icon: Network },
@@ -14,6 +15,7 @@ export const Sidebar: React.FC = () => {
     { to: '/reasoning', label: 'AI Reasoning Engine', icon: Cpu },
     { to: '/status', label: 'Cluster Status', icon: Activity },
   ];
+
 
   return (
     <aside className="glass-panel" style={{ width: '240px', borderRadius: 0, borderTop: 'none', borderBottom: 'none', borderLeft: 'none', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>

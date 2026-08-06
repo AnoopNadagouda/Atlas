@@ -1,15 +1,15 @@
-# ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.8: Enterprise AI Reasoning, Self-Reflection & Autonomous Decision Engine
+# ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM & AI OPERATING SYSTEM (AIOS)
+## Phase 5.9: Atlas AI Operating System (AIOS), Autonomous Enterprise Orchestration & Production Completion
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.8.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.8.0)
+[![Release](https://img.shields.io/badge/release-v5.9.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.9.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
 [![PostgreSQL](https://img.shields.io/badge/postgresql-16-blue.svg)](https://postgresql.org)
 [![Redis](https://img.shields.io/badge/redis-7.2-red.svg)](https://redis.io)
 
-**Atlas** is an enterprise-grade, cloud-native distributed search platform built to crawl, clean, index, rank, and search multi-modal web documents at a scale exceeding **1 Billion documents**.
+**Atlas** is an enterprise-grade, cloud-native distributed search platform and Autonomous AI Operating System (AIOS) built to crawl, clean, index, rank, search, and autonomously orchestrate enterprise missions at a scale exceeding **1 Billion documents**.
 
 Designed from scratch following Clean Architecture, Event-Driven Architecture, and Domain-Driven Design (DDD), Atlas features a custom-built Inverted Index Engine and BM25 Search Engine without relying on third-party search platforms such as Lucene, Elasticsearch, Solr, or OpenSearch.
 
@@ -17,21 +17,22 @@ Designed from scratch following Clean Architecture, Event-Driven Architecture, a
 
 ## 🏛️ System Architecture
 
-Atlas is composed of decoupled, event-driven Spring Boot microservices orchestrated through Spring Cloud API Gateway, Apache Kafka, PostgreSQL, Redis, and a glassmorphic React UI.
+Atlas is composed of decoupled, event-driven Spring Boot microservices orchestrated through Spring Cloud API Gateway, Apache Kafka, PostgreSQL, Redis, and a glassmorphic React UI shell.
 
 ```mermaid
 graph TD
-    Client["💻 React UI / Web Clients"] -->|HTTP / REST| Gateway["🚪 Atlas API Gateway (Port 8080)"]
+    Client["💻 React UI / AIOS Shell"] -->|HTTP / REST| Gateway["🚪 Atlas API Gateway (Port 8080)"]
     
-    subgraph "Microservices Cluster"
+    subgraph "AIOS Microservices Cluster"
+        Gateway -->|Route /api/v23/orchestrator| Orchestrator["👑 Orchestrator Service (Port 8090)"]
+        Gateway -->|Route /api/v20/agent| Agent["🤖 Agent Core Service (Port 8086)"]
+        Gateway -->|Route /api/v21/workflow| Workflow["⚡ Workflow Service (Port 8087)"]
+        Gateway -->|Route /api/v22/memory| Memory["🧠 Memory Service (Port 8088)"]
+        Gateway -->|Route /api/v22/reasoning| Reasoning["🧩 Reasoning Service (Port 8089)"]
+        Gateway -->|Route /api/v1/search| Search["🔍 Keyword Search Service (Port 8082)"]
         Gateway -->|Route /api/v1/crawl| Crawler["🕸️ Crawl Worker Service (Port 8083)"]
         Gateway -->|Route /api/v1/parser| Parser["🧹 HTML Parser Service (Port 8085)"]
         Gateway -->|Route /api/v1/index| Indexer["⚙️ Index Builder Worker (Port 8084)"]
-        Gateway -->|Route /api/v1/search| Search["🔍 Keyword Search Service (Port 8082)"]
-        Gateway -->|Route /api/v18/agents| Agent["🤖 Agent Core Service (Port 8086)"]
-        Gateway -->|Route /api/v20/workflows| Workflow["⚡ Workflow Service (Port 8087)"]
-        Gateway -->|Route /api/v21/memory| Memory["🧠 Memory Service (Port 8088)"]
-        Gateway -->|Route /api/v22/reasoning| Reasoning["🧩 Reasoning Service (Port 8089)"]
     end
 
     subgraph "Event Backbone & Messaging"

@@ -52,6 +52,7 @@
         <module>atlas-microservices/atlas-workflow-service</module>
         <module>atlas-microservices/atlas-memory-service</module>
         <module>atlas-microservices/atlas-reasoning-service</module>
+        <module>atlas-microservices/atlas-orchestrator-service</module>
     </modules>
 
     <dependencyManagement>

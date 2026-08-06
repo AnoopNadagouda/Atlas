@@ -11,6 +11,7 @@ import { CrawlerPage } from './pages/CrawlerPage';
 import { StatusPage } from './pages/StatusPage';
 import { MemoryPage } from './pages/MemoryPage';
 import { ReasoningPage } from './pages/ReasoningPage';
+import { AIOSPage } from './pages/AIOSPage';
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
         <main style={{ flex: 1, padding: '32px', maxWidth: '1400px' }}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/aios" element={<AIOSPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/federated-search" element={<FederatedSearchExplorer />} />
             <Route path="/connectors" element={<ConnectorDashboard />} />
@@ -35,5 +37,6 @@ const App: React.FC = () => {
     </div>
   );
 };
+
 
 export default App;
