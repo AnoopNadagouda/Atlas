@@ -1,0 +1,12 @@
+name: 💬 Question & Support
+description: Ask a question about Atlas setup, architecture, or usage
+title: "[QUESTION]: "
+labels: ["question"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: Ask your question clearly here.
+    validations:
+      required: true

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atlas-orchestrator-service
+  namespace: atlas-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: atlas-orchestrator-service
+  template:
+    metadata:
+      labels:
+        app: atlas-orchestrator-service
+    spec:
+      containers:
+        - name: orchestrator
+          image: atlas/atlas-orchestrator-service:v6.0.0
+          ports:
+            - containerPort: 8090
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: atlas-orchestrator-service
+  namespace: atlas-system
+spec:
+  selector:
+    app: atlas-orchestrator-service
+  ports:
+    - port: 8090
+      targetPort: 8090

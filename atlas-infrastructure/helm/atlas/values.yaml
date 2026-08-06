@@ -1,0 +1,19 @@
+replicaCount: 2
+
+image:
+  repository: atlas/atlas-orchestrator-service
+  tag: v6.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8090
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: api.atlas-search.io
+      paths:
+        - path: /api/v23/orchestrator
+          pathType: Prefix

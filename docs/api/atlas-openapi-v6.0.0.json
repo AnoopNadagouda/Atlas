@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Atlas Enterprise Distributed AI Search Engine & AIOS API",
+    "description": "Production OpenAPI 3.0 specification covering all endpoints across Search Gateway, Inverted Indexing, Multi-Agent Core, Workflow DAGs, AI Memory, Reasoning Engine, and AIOS Orchestrator.",
+    "version": "6.0.0",
+    "contact": {
+      "name": "Atlas Core Engineering Team",
+      "url": "https://github.com/AnoopNadagouda/Atlas"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Atlas API Gateway Server"
+    }
+  ],
+  "paths": {
+    "/api/v23/orchestrator/missions": {
+      "post": {
+        "summary": "Create Autonomous Mission",
+        "operationId": "createMission",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "Enterprise Risk Indexing" },
+                  "description": { "type": "string", "example": "Parse SEC filings and execute hybrid search." },
+                  "priority": { "type": "integer", "example": 5 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Mission created successfully" }
+        }
+      },
+      "get": {
+        "summary": "List Missions",
+        "operationId": "getMissions",
+        "responses": {
+          "200": { "description": "List of active tenant missions" }
+        }
+      }
+    },
+    "/api/v1/search/query": {
+      "post": {
+        "summary": "Execute BM25 Keyword Search",
+        "operationId": "searchQuery",
+        "responses": {
+          "200": { "description": "Search query response payload" }
+        }
+      }
+    }
+  }
+}

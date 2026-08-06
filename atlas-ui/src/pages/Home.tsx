@@ -1,24 +1,13 @@
 import React from 'react';
+import { HeroSection } from '../components/HeroSection';
 import { Search, Layers, Server, Cpu, Database, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Home: React.FC = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div className="glass-panel" style={{ padding: '32px', background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.1))' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>Atlas Studio v1.0.0</h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', maxWidth: '700px' }}>
-          Phase 1.1 Infrastructure & Project Foundation successfully initialized. Microservice backend communication, polyglot persistence, and event pipeline placeholders are operational.
-        </p>
-        <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
-          <Link to="/search" className="btn btn-primary">
-            <Search size={18} /> Open Search Studio
-          </Link>
-          <Link to="/crawler" className="btn btn-secondary">
-            <Layers size={18} /> Configure Crawl Jobs
-          </Link>
-        </div>
-      </div>
+      <HeroSection />
+
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
         <div className="glass-panel" style={{ padding: '20px' }}>

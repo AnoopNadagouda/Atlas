@@ -1,0 +1,23 @@
+name: Build & Push Docker Images
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Atlas Orchestrator Container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./atlas-microservices/atlas-orchestrator-service/Dockerfile
+          push: false
+          tags: atlas/atlas-orchestrator-service:v6.0.0

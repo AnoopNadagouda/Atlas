@@ -1,0 +1,41 @@
+name: 🐛 Bug Report
+description: Create a bug report to help us fix issues in Atlas
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for reporting a bug in Atlas! Please provide detailed context below.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+  - type: dropdown
+    id: module
+    attributes:
+      label: Affected Component
+      options:
+        - Orchestrator Service (8090)
+        - Agent Core Service (8086)
+        - Workflow Service (8087)
+        - Memory Service (8088)
+        - Reasoning Service (8089)
+        - Keyword Search (8082)
+        - Crawler / Parser / Indexer
+        - API Gateway / Config Server
+        - React UI Shell

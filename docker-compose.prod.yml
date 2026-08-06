@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: atlas-postgres-prod
+    environment:
+      POSTGRES_DB: atlas_db
+      POSTGRES_USER: atlas_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-prod_secure_password_99}
+    ports:
+      - "5432:5432"
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: atlas-redis-prod
+    ports:
+      - "6379:6379"
+    restart: always
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: atlas-kafka-prod
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    restart: always
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: atlas-zookeeper-prod
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  atlas-api-gateway:
+    image: atlas/atlas-api-gateway:v6.0.0
+    container_name: atlas-gateway-prod
+    ports:
+      - "8080:8080"
+    restart: always
+
+  atlas-orchestrator-service:
+    image: atlas/atlas-orchestrator-service:v6.0.0
+    container_name: atlas-orchestrator-prod
+    ports:
+      - "8090:8090"
+    restart: always

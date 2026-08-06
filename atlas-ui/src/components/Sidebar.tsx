@@ -1,11 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, Bot, Activity, Layers, FileText, Network, Globe, Brain, Cpu } from 'lucide-react';
+import { Home, Search, Activity, Layers, FileText, Network, Globe, Brain, Cpu, BookOpen, Terminal, Monitor, Sparkles } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const links = [
     { to: '/', label: 'Overview', icon: Home },
     { to: '/aios', label: 'Atlas AIOS Shell', icon: Cpu },
+    { to: '/docs', label: 'Documentation Hub', icon: BookOpen },
+    { to: '/api-explorer', label: 'API Explorer', icon: Terminal },
+    { to: '/architecture', label: 'Architecture Diagrams', icon: Layers },
+    { to: '/screenshots', label: 'Dashboard Gallery', icon: Monitor },
+    { to: '/blog', label: 'Engineering Blog', icon: Sparkles },
     { to: '/search', label: 'Search Studio', icon: Search },
     { to: '/federated-search', label: 'Federated Search', icon: Globe },
     { to: '/connectors', label: 'Connector Hub', icon: Network },
@@ -15,6 +20,7 @@ export const Sidebar: React.FC = () => {
     { to: '/reasoning', label: 'AI Reasoning Engine', icon: Cpu },
     { to: '/status', label: 'Cluster Status', icon: Activity },
   ];
+
 
 
   return (

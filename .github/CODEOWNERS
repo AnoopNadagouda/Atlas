@@ -1,0 +1,6 @@
+# Atlas Codeowners File
+* @AnoopNadagouda
+/atlas-microservices/ @AnoopNadagouda
+/atlas-infrastructure/ @AnoopNadagouda
+/atlas-shared/ @AnoopNadagouda
+/atlas-ui/ @AnoopNadagouda

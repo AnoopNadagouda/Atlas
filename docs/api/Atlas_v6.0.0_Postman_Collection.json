@@ -1,0 +1,26 @@
+{
+  "info": {
+    "name": "Atlas v6.0.0 Open-Source API Collection",
+    "description": "Production Postman Collection covering all Atlas REST API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "AIOS Orchestrator (Port 8090)",
+      "item": [
+        {
+          "name": "Create Mission",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "X-Tenant-ID", "value": "default-tenant" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Enterprise Financial Analysis\",\n  \"priority\": 5\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/v23/orchestrator/missions" }
+          }
+        }
+      ]
+    }
+  ]
+}
