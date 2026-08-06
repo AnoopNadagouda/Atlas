@@ -28,6 +28,9 @@ graph TD
         Gateway -->|Route /api/v1/parser| Parser["🧹 HTML Parser Service (Port 8085)"]
         Gateway -->|Route /api/v1/index| Indexer["⚙️ Index Builder Worker (Port 8084)"]
         Gateway -->|Route /api/v1/search| Search["🔍 Keyword Search Service (Port 8082)"]
+        Gateway -->|Route /api/v18/agents| Agent["🤖 Agent Core Service (Port 8086)"]
+        Gateway -->|Route /api/v20/workflows| Workflow["⚡ Workflow Service (Port 8087)"]
+        Gateway -->|Route /api/v21/memory| Memory["🧠 Memory Service (Port 8088)"]
     end
 
     subgraph "Event Backbone & Messaging"

@@ -22,6 +22,7 @@ class MemoryEngineTest {
     @Mock private MemoryConsolidationService consolidationService;
     @Mock private MemoryGraphBuilder graphBuilder;
     @Mock private MemoryAnalyticsService analyticsService;
+    @Mock private MemorySyncService syncService;
     @Mock private KafkaMemoryEventPublisher eventPublisher;
 
     private MemoryEngine memoryEngine;
@@ -31,7 +32,7 @@ class MemoryEngineTest {
         MockitoAnnotations.openMocks(this);
         memoryEngine = new MemoryEngineImpl(
             memoryStore, searchService, consolidationService,
-            graphBuilder, analyticsService, eventPublisher, new ObjectMapper()
+            graphBuilder, analyticsService, syncService, eventPublisher, new ObjectMapper()
         );
     }
 

@@ -9,6 +9,7 @@ import { ConnectorDashboard } from './pages/ConnectorDashboard';
 import { FederatedSearchExplorer } from './pages/FederatedSearchExplorer';
 import { CrawlerPage } from './pages/CrawlerPage';
 import { StatusPage } from './pages/StatusPage';
+import { MemoryPage } from './pages/MemoryPage';
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
             <Route path="/documents" element={<DocumentExplorer />} />
             <Route path="/crawler" element={<CrawlerPage />} />
             <Route path="/status" element={<StatusPage />} />
+            <Route path="/memory" element={<MemoryPage />} />
           </Routes>
         </main>
       </div>

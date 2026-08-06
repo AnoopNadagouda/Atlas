@@ -1,0 +1,51 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: atlas-reasoning-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:reasoningdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+atlas:
+  memory-service:
+    url: ${ATLAS_MEMORY_SERVICE_URL:http://localhost:8088}
+  agent-service:
+    url: ${ATLAS_AGENT_SERVICE_URL:http://localhost:8086}
+  workflow-service:
+    url: ${ATLAS_WORKFLOW_SERVICE_URL:http://localhost:8087}
+
+logging:
+  level:
+    root: INFO
+    com.atlas.reasoning: INFO

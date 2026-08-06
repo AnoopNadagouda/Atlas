@@ -82,6 +82,16 @@ public class MemoryStoreImpl implements MemoryStore {
     }
 
     @Override
+    public List<Memory> findMemoriesByConversation(String conversationId) {
+        return memoryRepository.findByTenantIdAndConversationId("default-tenant", conversationId).stream().map(this::mapToDomain).toList();
+    }
+
+    @Override
+    public List<Memory> findMemoriesByWorkflow(String workflowId) {
+        return memoryRepository.findByTenantIdAndWorkflowId("default-tenant", workflowId).stream().map(this::mapToDomain).toList();
+    }
+
+    @Override
     @Transactional
     public void deleteMemory(String id) {
         log.info("[MemoryStore] Deleting memory id='{}'", id);

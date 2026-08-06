@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, Bot, Activity, Layers, FileText, Network, Globe } from 'lucide-react';
+import { Home, Search, Bot, Activity, Layers, FileText, Network, Globe, Brain } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const links = [
@@ -10,6 +10,7 @@ export const Sidebar: React.FC = () => {
     { to: '/connectors', label: 'Connector Hub', icon: Network },
     { to: '/documents', label: 'Document Explorer', icon: FileText },
     { to: '/crawler', label: 'Crawl Scheduler', icon: Layers },
+    { to: '/memory', label: 'AI Memory Platform', icon: Brain },
     { to: '/status', label: 'Cluster Status', icon: Activity },
   ];
 

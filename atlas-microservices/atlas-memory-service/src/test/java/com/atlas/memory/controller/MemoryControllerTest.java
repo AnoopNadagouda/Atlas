@@ -30,6 +30,9 @@ class MemoryControllerTest {
     @MockBean
     private MemoryEngine memoryEngine;
 
+    @MockBean
+    private com.atlas.memory.service.MemoryRelationshipService relationshipService;
+
     @Test
     void testCreateMemory() throws Exception {
         MemoryCreateRequest request = new MemoryCreateRequest();

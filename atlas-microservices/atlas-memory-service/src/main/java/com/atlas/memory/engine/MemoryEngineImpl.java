@@ -1,5 +1,7 @@
 package com.atlas.memory.engine;
 
+import com.atlas.common.dto.memory.ContextRestorationRequest;
+import com.atlas.common.dto.memory.ContextRestorationResponse;
 import com.atlas.common.dto.memory.MemoryCreateRequest;
 import com.atlas.common.dto.memory.MemorySearchRequest;
 import com.atlas.common.dto.memory.MemoryUpdateRequest;
@@ -27,6 +29,7 @@ public class MemoryEngineImpl implements MemoryEngine {
     private final MemoryConsolidationService consolidationService;
     private final MemoryGraphBuilder graphBuilder;
     private final MemoryAnalyticsService analyticsService;
+    private final MemorySyncService syncService;
     private final KafkaMemoryEventPublisher eventPublisher;
     private final ObjectMapper objectMapper;
 
@@ -35,6 +38,7 @@ public class MemoryEngineImpl implements MemoryEngine {
                             MemoryConsolidationService consolidationService,
                             MemoryGraphBuilder graphBuilder,
                             MemoryAnalyticsService analyticsService,
+                            MemorySyncService syncService,
                             KafkaMemoryEventPublisher eventPublisher,
                             ObjectMapper objectMapper) {
         this.memoryStore = memoryStore;
@@ -42,6 +46,7 @@ public class MemoryEngineImpl implements MemoryEngine {
         this.consolidationService = consolidationService;
         this.graphBuilder = graphBuilder;
         this.analyticsService = analyticsService;
+        this.syncService = syncService;
         this.eventPublisher = eventPublisher;
         this.objectMapper = objectMapper;
     }
@@ -199,5 +204,20 @@ public class MemoryEngineImpl implements MemoryEngine {
         } catch (Exception e) {
             throw new RuntimeException("Failed to import memories: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<Memory> getConversationHistory(String tenantId, String conversationId) {
+        return memoryStore.findMemoriesByConversation(conversationId);
+    }
+
+    @Override
+    public List<Memory> getWorkflowHistory(String tenantId, String workflowId) {
+        return memoryStore.findMemoriesByWorkflow(workflowId);
+    }
+
+    @Override
+    public ContextRestorationResponse restoreContext(String tenantId, ContextRestorationRequest request) {
+        return syncService.restoreContext(tenantId, request);
     }
 }

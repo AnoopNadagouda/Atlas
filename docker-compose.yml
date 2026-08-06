@@ -76,6 +76,7 @@ services:
       KEYWORD_SEARCH_URI: http://atlas-keyword-search:8082
       CRAWLER_WORKER_URI: http://atlas-crawler-worker:8083
       INDEX_BUILDER_URI: http://atlas-index-builder-worker:8084
+      MEMORY_SERVICE_URI: http://atlas-memory-service:8088
 
   # Microservices
   atlas-search-gateway:
@@ -166,6 +167,27 @@ services:
         condition: service_started
     ports:
       - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_db
+      SPRING_DATASOURCE_USERNAME: atlas
+      SPRING_DATASOURCE_PASSWORD: atlas_password
+      REDIS_HOST: redis
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+
+  atlas-memory-service:
+    build:
+      context: .
+      dockerfile: atlas-microservices/atlas-memory-service/Dockerfile
+    container_name: atlas-memory-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    ports:
+      - "8088:8088"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/atlas_db
       SPRING_DATASOURCE_USERNAME: atlas

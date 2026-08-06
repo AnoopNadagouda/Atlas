@@ -1,5 +1,7 @@
 package com.atlas.memory.engine;
 
+import com.atlas.common.dto.memory.ContextRestorationRequest;
+import com.atlas.common.dto.memory.ContextRestorationResponse;
 import com.atlas.common.dto.memory.MemoryCreateRequest;
 import com.atlas.common.dto.memory.MemorySearchRequest;
 import com.atlas.common.dto.memory.MemoryUpdateRequest;
@@ -23,4 +25,7 @@ public interface MemoryEngine {
     MemoryAnalytics getAnalytics(String tenantId);
     String exportMemories(String tenantId);
     int importMemories(String tenantId, String jsonData);
+    List<Memory> getConversationHistory(String tenantId, String conversationId);
+    List<Memory> getWorkflowHistory(String tenantId, String workflowId);
+    ContextRestorationResponse restoreContext(String tenantId, ContextRestorationRequest request);
 }
