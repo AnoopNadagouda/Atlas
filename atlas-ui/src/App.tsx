@@ -10,6 +10,7 @@ import { FederatedSearchExplorer } from './pages/FederatedSearchExplorer';
 import { CrawlerPage } from './pages/CrawlerPage';
 import { StatusPage } from './pages/StatusPage';
 import { MemoryPage } from './pages/MemoryPage';
+import { ReasoningPage } from './pages/ReasoningPage';
 
 const App: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const App: React.FC = () => {
             <Route path="/crawler" element={<CrawlerPage />} />
             <Route path="/status" element={<StatusPage />} />
             <Route path="/memory" element={<MemoryPage />} />
+            <Route path="/reasoning" element={<ReasoningPage />} />
           </Routes>
         </main>
       </div>

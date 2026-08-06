@@ -1,8 +1,8 @@
 # ATLAS: ENTERPRISE DISTRIBUTED AI SEARCH PLATFORM
-## Phase 5.7: Enterprise AI Memory, Long-Term Context & Knowledge Learning Platform
+## Phase 5.8: Enterprise AI Reasoning, Self-Reflection & Autonomous Decision Engine
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/AnoopNadagouda/Atlas)
-[![Release](https://img.shields.io/badge/release-v5.7.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.7.0)
+[![Release](https://img.shields.io/badge/release-v5.8.0-blue.svg)](https://github.com/AnoopNadagouda/Atlas/releases/tag/v5.8.0)
 [![Java 21](https://img.shields.io/badge/java-21-orange.svg)](https://oracle.com/java)
 [![Spring Boot](https://img.shields.io/badge/spring--boot-3.2.5-green.svg)](https://spring.io/projects/spring-boot)
 [![Kafka](https://img.shields.io/badge/kafka-3.6.2-black.svg)](https://kafka.apache.org/)
@@ -31,6 +31,7 @@ graph TD
         Gateway -->|Route /api/v18/agents| Agent["🤖 Agent Core Service (Port 8086)"]
         Gateway -->|Route /api/v20/workflows| Workflow["⚡ Workflow Service (Port 8087)"]
         Gateway -->|Route /api/v21/memory| Memory["🧠 Memory Service (Port 8088)"]
+        Gateway -->|Route /api/v22/reasoning| Reasoning["🧩 Reasoning Service (Port 8089)"]
     end
 
     subgraph "Event Backbone & Messaging"

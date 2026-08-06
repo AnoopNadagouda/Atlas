@@ -2,6 +2,20 @@
 
 All notable changes to the Atlas Search Engine project will be documented in this file.
 
+## [v5.8.0] - 2026-08-06
+### Phase 5.8: Enterprise AI Reasoning, Self-Reflection & Autonomous Decision Engine
+- Created new microservice `atlas-reasoning-service` running on Port `8089`.
+- Production Reasoning Engine supporting 10 Modes: `CHAIN_OF_THOUGHT`, `TREE_OF_THOUGHTS`, `GRAPH_OF_THOUGHTS`, `REFLECTION`, `REACT`, `PLAN_AND_EXECUTE`, `GOAL_ORIENTED`, `CONSTRAINT_BASED`, `MULTI_STEP_DECISION`, `ADAPTIVE_REPLANNING`.
+- Autonomous Goal Manager (`GoalManager`), Multi-Step Task Decomposer (`TaskDecomposer`), and Candidate Alternative Generator (`AlternativeGenerator`).
+- Decision Engine with Risk Assessment & Cost-Reward Tradeoff Evaluator (`DecisionEngine`, `RiskAssessmentEngine`, `ConfidenceEstimator`).
+- Execution Evaluator & Critic Engine with Hallucination Detection (`CriticEngine`, `ExecutionEvaluator`).
+- Post-Task Self-Reflection Engine (`SelfReflectionEngine`).
+- Failure Cause Analyzer (`FailureAnalyzer`) & Autonomous Recovery Planner (`RecoveryPlanner`).
+- Thought Graph Builder (`ThoughtGraphBuilder`) & Reasoning Trace Store (`ReasoningTraceStore`).
+- REST APIs (`/api/v22/reasoning`) with Swagger OpenAPI annotations.
+- Kafka Event Publisher for reasoning lifecycle events (`reasoning.events.lifecycle`).
+- Glassmorphic React UI components (`ReasoningDashboard`, `GoalManagerView`, `ThoughtGraphView`, `DecisionExplorer`, `ReflectionViewer`, `CritiquePanel`, `ReasoningTimeline`, `RecoveryCenter`, `ReasoningAnalyticsView`).
+
 ## [v5.7.0] - 2026-08-05
 ### Phase 5.7: Enterprise AI Memory, Long-Term Context & Knowledge Learning Platform
 - Created new microservice `atlas-memory-service` running on Port `8088`.
